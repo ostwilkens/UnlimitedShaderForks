@@ -1,2 +1,2 @@
 # UnlimitedShaderForks
-Generates attractive, abstract GLSL fragment shaders
+Generate attractive, abstract GLSL fragment shaders
