@@ -24,7 +24,7 @@ namespace UnlimitedShaderForks
 		public Window(WindowCreateInfo windowCreateInfo)
 		{
 			_window = VeldridStartup.CreateWindow(ref windowCreateInfo);
-			_graphicsDevice = VeldridStartup.CreateGraphicsDevice(_window);
+			_graphicsDevice = VeldridStartup.CreateGraphicsDevice(_window, GraphicsBackend.Vulkan);
 			_factory = _graphicsDevice.ResourceFactory;
 
 			Vector2[] quadVertices =
@@ -96,6 +96,16 @@ namespace UnlimitedShaderForks
 			var pipelineDescription = new GraphicsPipelineDescription
 			{
 				BlendState = BlendStateDescription.SingleOverrideBlend,
+				DepthStencilState = new DepthStencilStateDescription(
+					depthTestEnabled: false,
+					depthWriteEnabled: true,
+					comparisonKind: ComparisonKind.LessEqual),
+				RasterizerState = new RasterizerStateDescription(
+					cullMode: FaceCullMode.None,
+					fillMode: PolygonFillMode.Solid,
+					frontFace: FrontFace.Clockwise,
+					depthClipEnabled: true,
+					scissorTestEnabled: false),
 				PrimitiveTopology = PrimitiveTopology.TriangleStrip,
 				ResourceLayouts = Array.Empty<ResourceLayout>(),
 				ShaderSet = new ShaderSetDescription(new VertexLayoutDescription[] { vertexLayout }, shaders),
