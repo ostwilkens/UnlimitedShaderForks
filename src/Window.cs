@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Numerics;
 using System.Text;
 using Veldrid;
@@ -17,12 +18,17 @@ namespace UnlimitedShaderForks
 		private DeviceBuffer _vertexBuffer;
 		private DeviceBuffer _indexBuffer;
 		private Pipeline _pipeline;
+		private Stopwatch _swLifetime = new Stopwatch();
+		private Stopwatch _swThisSecond = new Stopwatch();
+		private int _framesThisSecond = 0;
 
 		public bool Exists => _window.Exists;
 		public void Close() => _window.Close();
 
 		public Window(WindowCreateInfo windowCreateInfo)
 		{
+			_swLifetime.Start();
+			_swThisSecond.Start();
 			_window = VeldridStartup.CreateWindow(ref windowCreateInfo);
 			_graphicsDevice = VeldridStartup.CreateGraphicsDevice(_window, GraphicsBackend.Vulkan);
 			_factory = _graphicsDevice.ResourceFactory;
@@ -49,6 +55,15 @@ namespace UnlimitedShaderForks
 
 		public InputSnapshot Update()
 		{
+			_framesThisSecond++;
+
+			if (_swThisSecond.ElapsedMilliseconds >= 1000)
+			{
+				_window.Title = $"{_framesThisSecond} fps";
+				_framesThisSecond = 0;
+				_swThisSecond.Restart();
+			}
+
 			Draw();
 			return _window.PumpEvents();
 		}
