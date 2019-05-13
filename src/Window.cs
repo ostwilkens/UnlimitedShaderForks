@@ -14,13 +14,15 @@ namespace UnlimitedShaderForks
 		private Sdl2Window _window;
 		private GraphicsDevice _graphicsDevice;
 		private ResourceFactory _factory;
-		private CommandList _commandList;
+		private CommandList _cl;
 		private DeviceBuffer _vertexBuffer;
 		private DeviceBuffer _indexBuffer;
 		private Pipeline _pipeline;
+		private ResourceSet _resourceSet;
 		private Stopwatch _swLifetime = new Stopwatch();
 		private Stopwatch _swThisSecond = new Stopwatch();
 		private int _framesThisSecond = 0;
+		public float Time => (float)_swLifetime.Elapsed.TotalSeconds;
 
 		public bool Exists => _window.Exists;
 		public void Close() => _window.Close();
@@ -51,7 +53,7 @@ namespace UnlimitedShaderForks
 			_graphicsDevice.UpdateBuffer(_indexBuffer, 0, quadIndices);
 
 			SetGraphicsPipeline();
-			_commandList = _factory.CreateCommandList();
+			_cl = _factory.CreateCommandList();
 		}
 
 		public InputSnapshot Update()
@@ -65,26 +67,28 @@ namespace UnlimitedShaderForks
 				_swThisSecond.Restart();
 			}
 
+			_graphicsDevice.UpdateBuffer(_timeBuffer, 0, Time);
 			Draw();
 			return _window.PumpEvents();
 		}
 
 		private void Draw()
 		{
-			_commandList.Begin();
-			_commandList.SetFramebuffer(_graphicsDevice.SwapchainFramebuffer);
-			_commandList.ClearColorTarget(0, RgbaFloat.Black);
-			_commandList.SetVertexBuffer(0, _vertexBuffer);
-			_commandList.SetIndexBuffer(_indexBuffer, IndexFormat.UInt16);
-			_commandList.SetPipeline(_pipeline);
-			_commandList.DrawIndexed(
+			_cl.Begin();
+			_cl.SetFramebuffer(_graphicsDevice.SwapchainFramebuffer);
+			_cl.ClearColorTarget(0, RgbaFloat.Black);
+			_cl.SetVertexBuffer(0, _vertexBuffer);
+			_cl.SetIndexBuffer(_indexBuffer, IndexFormat.UInt16);
+			_cl.SetPipeline(_pipeline);
+			_cl.SetGraphicsResourceSet(0, _resourceSet);
+			_cl.DrawIndexed(
 				indexCount: 4,
 				instanceCount: 1,
 				indexStart: 0,
 				vertexOffset: 0,
 				instanceStart: 0);
-			_commandList.End();
-			_graphicsDevice.SubmitCommands(_commandList);
+			_cl.End();
+			_graphicsDevice.SubmitCommands(_cl);
 			_graphicsDevice.SwapBuffers();
 		}
 
@@ -99,15 +103,19 @@ namespace UnlimitedShaderForks
 			}
 		}
 
+		private DeviceBuffer _timeBuffer;
+
 		private void SetGraphicsPipeline()
 		{
 			var vertexElements = new[] { new VertexElementDescription("Position", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float2) };
 			var vertexLayout = new VertexLayoutDescription(vertexElements);
 
-			var vertexShaderDesc = new ShaderDescription(ShaderStages.Vertex, Encoding.UTF8.GetBytes(DefaultShaders.VertexCode), "main");
-			var fragmentShaderDesc = new ShaderDescription(ShaderStages.Fragment, Encoding.UTF8.GetBytes(FragmentCode), "main");
+			var shaders = _factory.CreateFromSpirv(
+				new ShaderDescription(ShaderStages.Vertex, Encoding.UTF8.GetBytes(DefaultShaders.VertexCode), "main"),
+				new ShaderDescription(ShaderStages.Fragment, Encoding.UTF8.GetBytes(FragmentCode), "main"));
 
-			var shaders = _factory.CreateFromSpirv(vertexShaderDesc, fragmentShaderDesc);
+			var resourceLayout = _factory.CreateResourceLayout(new ResourceLayoutDescription(
+				new ResourceLayoutElementDescription("Time", ResourceKind.UniformBuffer, ShaderStages.Fragment)));
 
 			var pipelineDescription = new GraphicsPipelineDescription
 			{
@@ -123,10 +131,13 @@ namespace UnlimitedShaderForks
 					depthClipEnabled: true,
 					scissorTestEnabled: false),
 				PrimitiveTopology = PrimitiveTopology.TriangleStrip,
-				ResourceLayouts = Array.Empty<ResourceLayout>(),
+				ResourceLayouts = new[] { resourceLayout },
 				ShaderSet = new ShaderSetDescription(new VertexLayoutDescription[] { vertexLayout }, shaders),
 				Outputs = _graphicsDevice.SwapchainFramebuffer.OutputDescription,
 			};
+
+			_timeBuffer = _factory.CreateBuffer(new BufferDescription(16, BufferUsage.UniformBuffer));
+			_resourceSet = _factory.CreateResourceSet(new ResourceSetDescription(resourceLayout, _timeBuffer));
 
 			_pipeline = _factory.CreateGraphicsPipeline(pipelineDescription);
 		}
