@@ -30,7 +30,8 @@ namespace UnlimitedShaderForks
 			_swLifetime.Start();
 			_swThisSecond.Start();
 			_window = VeldridStartup.CreateWindow(ref windowCreateInfo);
-			_graphicsDevice = VeldridStartup.CreateGraphicsDevice(_window, GraphicsBackend.Vulkan);
+			var options = new GraphicsDeviceOptions { PreferStandardClipSpaceYDirection = true };
+			_graphicsDevice = VeldridStartup.CreateGraphicsDevice(_window, options, GraphicsBackend.Vulkan);
 			_factory = _graphicsDevice.ResourceFactory;
 
 			Vector2[] quadVertices =
