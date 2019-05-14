@@ -12,7 +12,7 @@ namespace UnlimitedShaderForks
 	{
 		static void Main()
 		{
-			var windowCreateInfo = new WindowCreateInfo(x: 100, y: 100, 1280, 720, WindowState.Normal, "Demo");
+			var windowCreateInfo = new WindowCreateInfo(100, 100, 1280, 720, WindowState.Normal, "Demo");
 			var window = new Window(windowCreateInfo);
 
 			while (window.Exists)
