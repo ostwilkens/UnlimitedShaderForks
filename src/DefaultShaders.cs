@@ -27,8 +27,31 @@ layout(location = 0) out vec4 fsout_Color;
 
 void main()
 {
-	fsout_Color = vec4(fsin_Position.y);
-	fsout_Color += _Time;
+	vec2 uv = fsin_Position;
+	vec3 c = vec3(0.);
+
+	c.r += step(0.95, abs(uv.x));
+	c.g += step(0.95, abs(uv.y));
+	c.b += uv.x + uv.y;
+	c += vec3(step(0.0, uv.y + uv.x) * 0.2);
+
+	fsout_Color = vec4(c, 0.);
 }";
+
+		public const string PassthroughFragmentCode = @"
+#version 450
+
+layout(set = 0, binding = 0) uniform texture2D SourceTexture;
+layout(set = 0, binding = 1) uniform sampler SourceSampler;
+
+layout(location = 0) in vec2 fsin_Position;
+layout(location = 0) out vec4 fsout_Color;
+
+void main()
+{
+	vec2 uv = fsin_Position/2. + 0.5;
+	fsout_Color = texture(sampler2D(SourceTexture, SourceSampler), uv);
+}
+";
 	}
 }
