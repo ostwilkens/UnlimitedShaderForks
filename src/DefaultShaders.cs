@@ -33,7 +33,7 @@ void main()
 	c.r += step(0.95, abs(uv.x));
 	c.g += step(0.95, abs(uv.y));
 	c.b += uv.x + uv.y;
-	c += vec3(step(0.0, uv.y + uv.x) * 0.2);
+	c += vec3(step(0.0, uv.y + uv.x + sin(_Time) * 0.2) * 0.2);
 
 	fsout_Color = vec4(c, 0.);
 }";
