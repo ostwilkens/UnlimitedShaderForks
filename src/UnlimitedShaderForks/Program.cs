@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using System.Text;
+using UnlimitedShaderForks.GLSLBuilder;
 using Veldrid;
 using Veldrid.Sdl2;
 using Veldrid.SPIRV;
@@ -12,6 +13,8 @@ namespace UnlimitedShaderForks
 	{
 		static void Main()
 		{
+			var test = new GLSLGenerator();
+
 			var windowCreateInfo = new WindowCreateInfo(100, 100, 1280, 720, WindowState.Normal, "Demo");
 			var window = new Window(windowCreateInfo);
 
