@@ -11,13 +11,17 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>../build</OutputPath>
+    <OutputPath>../../build</OutputPath>
   </PropertyGroup>
   
   <ItemGroup>
     <PackageReference Include="Veldrid" Version="4.5.0" />
     <PackageReference Include="Veldrid.StartupUtilities" Version="4.5.0" />
     <PackageReference Include="Veldrid.SPIRV" Version="1.0.7" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\UnlimitedShaderForks.GLSLBuilder\UnlimitedShaderForks.GLSLBuilder.csproj" />
   </ItemGroup>
 
 </Project>
