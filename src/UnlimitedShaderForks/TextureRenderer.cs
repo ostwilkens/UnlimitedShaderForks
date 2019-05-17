@@ -39,8 +39,8 @@ namespace UnlimitedShaderForks
 			_timeBuffer = _factory.CreateBuffer(new BufferDescription(16, BufferUsage.UniformBuffer));
 
 			TextureDescription textureDesc = TextureDescription.Texture2D(
-				_gd.SwapchainFramebuffer.Width / 8,
-				_gd.SwapchainFramebuffer.Height / 8,
+				_gd.SwapchainFramebuffer.Width / 4,
+				_gd.SwapchainFramebuffer.Height / 4,
 				1,
 				1,
 				PixelFormat.R16_G16_B16_A16_Float,
