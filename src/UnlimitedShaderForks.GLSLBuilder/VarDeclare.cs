@@ -2,7 +2,7 @@
 {
 	public class VarDeclare<T> : IStatement
 	{
-		private Var<T> var;
+		protected Var<T> var;
 
 		public VarDeclare(Var<T> var)
 		{

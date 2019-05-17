@@ -3,8 +3,14 @@ using System.Numerics;
 
 namespace UnlimitedShaderForks.GLSLBuilder
 {
-	public static class FragSharpExtensions
+	public static class Extensions
 	{
+		public static T GetRandomItem<T>(this T[] array, Random rand)
+		{
+			int i = rand.Next(0, array.Length);
+			return array[i];
+		}
+
 		public static Type GetInterfaceStartsWith(this Type t, string name)
 		{
 			foreach(var i in t.GetInterfaces())
@@ -14,6 +20,17 @@ namespace UnlimitedShaderForks.GLSLBuilder
 			}
 
 			throw new Exception("Interface not found");
+		}
+
+		public static Type GetInterfaceStartsWithOrDefault(this Type t, string name)
+		{
+			foreach (var i in t.GetInterfaces())
+			{
+				if (i.Name.StartsWith(name))
+					return i;
+			}
+
+			return null;
 		}
 
 		internal static string Print(this Type type)

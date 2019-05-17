@@ -51,7 +51,7 @@ namespace UnlimitedShaderForks
 		protected override ResourceLayout GetResourceLayout()
 		{
 			return _factory.CreateResourceLayout(new ResourceLayoutDescription(
-				new ResourceLayoutElementDescription("Time", ResourceKind.UniformBuffer, ShaderStages.Fragment)));
+				new ResourceLayoutElementDescription("_Time", ResourceKind.UniformBuffer, ShaderStages.Fragment)));
 		}
 
 		protected override ResourceSet GetResourceSet(ResourceLayout resourceLayout)
@@ -69,7 +69,8 @@ namespace UnlimitedShaderForks
 		{
 			return _factory.CreateFromSpirv(
 				new ShaderDescription(ShaderStages.Vertex, Encoding.UTF8.GetBytes(DefaultShaders.VertexCode), "main"),
-				new ShaderDescription(ShaderStages.Fragment, Encoding.UTF8.GetBytes(FragmentCode), "main"));
+				new ShaderDescription(ShaderStages.Fragment, Encoding.UTF8.GetBytes(FragmentCode), "main"), 
+				new CrossCompileOptions(false, true));
 		}
 
 		public override void UpdateResources()

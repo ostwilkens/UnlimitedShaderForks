@@ -33,7 +33,7 @@ namespace UnlimitedShaderForks
 			_gd = VeldridStartup.CreateGraphicsDevice(
 				_window,
 				new GraphicsDeviceOptions { PreferStandardClipSpaceYDirection = true }, 
-				GraphicsBackend.Vulkan);
+				GraphicsBackend.OpenGL);
 			_factory = _gd.ResourceFactory;
 
 			_cl = _factory.CreateCommandList();
@@ -83,6 +83,7 @@ namespace UnlimitedShaderForks
 			set
 			{
 				_textureRenderer.FragmentCode = value;
+				Console.WriteLine(value);
 				_textureRenderer.ReloadShaders();
 			}
 		}

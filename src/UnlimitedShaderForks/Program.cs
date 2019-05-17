@@ -16,8 +16,7 @@ namespace UnlimitedShaderForks
 			var windowCreateInfo = new WindowCreateInfo(100, 100, 1280, 720, WindowState.Normal, "Demo");
 			var window = new Window(windowCreateInfo);
 			var gen = new GLSLGenerator();
-
-			Console.WriteLine(gen.Test());
+			window.FragmentCode = gen.Generate();
 
 			while (window.Exists)
 			{
@@ -34,7 +33,7 @@ namespace UnlimitedShaderForks
 							window.Close();
 							break;
 						case Key.R:
-							window.FragmentCode = gen.Test();
+							window.FragmentCode = gen.Generate();
 							break;
 					}
 				}
