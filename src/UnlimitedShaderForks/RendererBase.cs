@@ -80,6 +80,12 @@ namespace UnlimitedShaderForks
 			_pipeline = _factory.CreateGraphicsPipeline(_pipelineDesc);
 		}
 
+		public void ReloadShaders()
+		{
+			_pipelineDesc.ShaderSet.Shaders = GetShaders();
+			_pipeline = _factory.CreateGraphicsPipeline(_pipelineDesc);
+		}
+
 		public void Draw(CommandList cl)
 		{
 			cl.SetPipeline(_pipeline);

@@ -17,10 +17,7 @@ void main()
 		public const string FragmentCode = @"
 #version 450
 
-layout(set = 0, binding = 0) uniform Time
-{
-	float _Time;
-};
+layout(set = 0, binding = 0) uniform _ { float _Time; };
 
 layout(location = 0) in vec2 fsin_Position;
 layout(location = 0) out vec4 fsout_Color;

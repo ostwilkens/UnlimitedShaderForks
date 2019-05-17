@@ -13,38 +13,30 @@ namespace UnlimitedShaderForks
 	{
 		static void Main()
 		{
-			var test = new GLSLGenerator();
-
 			var windowCreateInfo = new WindowCreateInfo(100, 100, 1280, 720, WindowState.Normal, "Demo");
 			var window = new Window(windowCreateInfo);
+			var gen = new GLSLGenerator();
+
+			Console.WriteLine(gen.Test());
 
 			while (window.Exists)
 			{
 				var inputSnapshot = window.Update();
 
-				foreach(var keyEvent in inputSnapshot.KeyEvents)
+				foreach (var keyEvent in inputSnapshot.KeyEvents)
 				{
 					if (!keyEvent.Down)
 						continue;
 
-					switch(keyEvent.Key)
+					switch (keyEvent.Key)
 					{
 						case Key.Escape:
 							window.Close();
 							break;
 						case Key.R:
-							window.FragmentCode = @"
-#version 450
-
-layout(location = 0) in vec2 fsin_Position;
-layout(location = 0) out vec4 fsout_Color;
-
-void main()
-{
-	fsout_Color = vec4(fsin_Position.x);
-}";
+							window.FragmentCode = gen.Test();
 							break;
-	}
+					}
 				}
 			}
 		}

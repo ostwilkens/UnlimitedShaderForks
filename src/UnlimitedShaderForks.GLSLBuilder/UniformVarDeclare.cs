@@ -8,7 +8,7 @@
 
 		public override string ToString()
 		{
-			return $"uniform {base.ToString()}";
+			return $"layout(set = 0, binding = 0) uniform _ {{ {base.ToString()}; }}";
 		}
 	}
 }

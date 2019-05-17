@@ -20,6 +20,14 @@ namespace UnlimitedShaderForks.GLSLBuilder
 			return var;
 		}
 
+		public Var<T> DeclareIn<T>(string name)
+		{
+			var var = new Var<T>(name);
+			var decl = new InVarDeclare<T>(var);
+			Append(decl);
+			return var;
+		}
+
 		public Fn<TResult> DeclareFunction<TResult>(string name)
 		{
 			var fn = new Fn<TResult>(name);
@@ -51,7 +59,7 @@ namespace UnlimitedShaderForks.GLSLBuilder
 		public override string ToString()
 		{
 			var sb = new StringBuilder();
-			sb.AppendLine("#version 130");
+			sb.AppendLine("#version 450");
 			sb.Append(base.ToString());
 			return sb.ToString();
 		}

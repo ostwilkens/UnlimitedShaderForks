@@ -19,7 +19,8 @@ namespace UnlimitedShaderForks
 		private Stopwatch _swLifetime = new Stopwatch();
 		private Stopwatch _swThisSecond = new Stopwatch();
 		private int _framesThisSecond = 0;
-		private IRenderer[] _renderers;
+		private TextureRenderer _textureRenderer;
+		private PassthroughRenderer _passthroughRenderer;
 
 		public bool Exists => _window.Exists;
 		public void Close() => _window.Close();
@@ -37,13 +38,8 @@ namespace UnlimitedShaderForks
 
 			_cl = _factory.CreateCommandList();
 
-			var textureRenderer = new TextureRenderer(_gd, DefaultShaders.FragmentCode, _swLifetime);
-			var passthroughRenderer = new PassthroughRenderer(_gd, textureRenderer.Texture);
-			_renderers = new IRenderer[]
-			{
-				textureRenderer,
-				passthroughRenderer,
-			};
+			_textureRenderer = new TextureRenderer(_gd, DefaultShaders.FragmentCode, _swLifetime);
+			_passthroughRenderer = new PassthroughRenderer(_gd, _textureRenderer.Texture);
 		}
 
 		private void UpdateFps()
@@ -62,10 +58,8 @@ namespace UnlimitedShaderForks
 		{
 			UpdateFps();
 
-			foreach(var renderer in _renderers)
-			{
-				renderer.UpdateResources();
-			}
+			_textureRenderer.UpdateResources();
+			_passthroughRenderer.UpdateResources();
 
 			Draw();
 			return _window.PumpEvents();
@@ -75,24 +69,21 @@ namespace UnlimitedShaderForks
 		{
 			_cl.Begin();
 
-			foreach(var renderer in _renderers)
-			{
-				renderer.Draw(_cl);
-			}
+			_textureRenderer.Draw(_cl);
+			_passthroughRenderer.Draw(_cl);
 
 			_cl.End();
 			_gd.SubmitCommands(_cl);
 			_gd.SwapBuffers();
 		}
 
-		private string _fragmentCode = DefaultShaders.FragmentCode;
 		public string FragmentCode
 		{
-			get => _fragmentCode;
+			get => _textureRenderer.FragmentCode;
 			set
 			{
-				_fragmentCode = value;
-				//CreateGraphicsPipeline();
+				_textureRenderer.FragmentCode = value;
+				_textureRenderer.ReloadShaders();
 			}
 		}
 	}

@@ -56,7 +56,10 @@ namespace UnlimitedShaderForks.GLSLBuilder
 			var sb = new StringBuilder();
 			foreach(var statement in statements)
 			{
-				sb.AppendLine($"{statement};");
+				if(statement is IContainer)
+					sb.AppendLine($"{statement}");
+				else
+					sb.AppendLine($"{statement};");
 			}
 
 			return sb.ToString();
