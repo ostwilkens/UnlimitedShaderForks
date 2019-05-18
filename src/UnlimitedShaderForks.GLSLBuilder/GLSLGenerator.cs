@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Text;
 
 namespace UnlimitedShaderForks.GLSLBuilder
 {
@@ -125,7 +123,6 @@ namespace UnlimitedShaderForks.GLSLBuilder
 				fn.Length(uv),
 				fn.Sin(3 * time * 1.57f),
 				fn.Tan(3 * time) / 2f,
-				// TODO: rotation
 				CompositeFn.From((a1, a2) => pR.Call(fn.Vec2(a1, a2), time).X()),
 				CompositeFn.From((a1, a2) => pR.Call(fn.Vec2(a1, a2), time).Y())
 			);
@@ -153,6 +150,7 @@ namespace UnlimitedShaderForks.GLSLBuilder
 			main.Set(c, c + noise.Call(pR.Call(uv, time), 0.5f) * 0.01f);
 			main.Set(c, c - fn.Step(0.65f, fn.Abs(uv.Y())));
 
+
 			main.Append(@"
 				// grading
 				c -= 0.02;
@@ -163,6 +161,8 @@ namespace UnlimitedShaderForks.GLSLBuilder
 				c *= vec3(1.08, 0.99, 0.99); // tint red
 				c.z = (c.z + 0.05) / 1.05; // bias blue
 				c = mix(c, c.yyy, 0.12); // desaturate");
+
+			//main.Set
 
 			main.Set(colorOut, fn.Vec4(c, 1f));
 			return body.ToString();
