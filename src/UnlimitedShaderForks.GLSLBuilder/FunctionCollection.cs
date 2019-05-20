@@ -7,6 +7,9 @@ namespace UnlimitedShaderForks.GLSLBuilder
 		public readonly Fn<float, float> round_f = new Fn<float, float>("round");
 		public Value<float> Round(Value<float> a) => round_f.Call(a);
 
+		public readonly Fn<float, float> floor_f = new Fn<float, float>("floor");
+		public Value<float> Floor(Value<float> a) => floor_f.Call(a);
+
 		public readonly Fn<float, float> abs_f = new Fn<float, float>("abs");
 		public Value<float> Abs(Value<float> a) => abs_f.Call(a);
 

@@ -39,7 +39,7 @@ namespace UnlimitedShaderForks
 			_cl = _factory.CreateCommandList();
 
 			_textureRenderer = new TextureRenderer(_gd, DefaultShaders.FragmentCode, _swLifetime);
-			_passthroughRenderer = new PassthroughRenderer(_gd, _textureRenderer.Texture);
+			_passthroughRenderer = new PassthroughRenderer(_gd, _textureRenderer.Texture, _swLifetime);
 		}
 
 		private void UpdateFps()
