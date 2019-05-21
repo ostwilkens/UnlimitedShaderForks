@@ -2,13 +2,16 @@
 {
 	public class UniformVarDeclare<T> : VarDeclare<T>
 	{
-		public UniformVarDeclare(Var<T> var) : base(var)
+		private int binding;
+
+		public UniformVarDeclare(Var<T> var, int binding) : base(var)
 		{
+			this.binding = binding;
 		}
 
 		public override string ToString()
 		{
-			return $"layout(set = 0, binding = 0) uniform _{var} {{ {base.ToString()}; }}";
+			return $"layout(set = 0, binding = {binding}) uniform _{var} {{ {base.ToString()}; }}";
 		}
 	}
 }

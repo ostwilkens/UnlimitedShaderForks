@@ -4,10 +4,10 @@ namespace UnlimitedShaderForks.GLSLBuilder
 {
 	public class ShaderBody : ContainerBase
 	{
-		public Var<T> DeclareUniform<T>(string name)
+		public Var<T> DeclareUniform<T>(string name, int binding)
 		{
 			var var = new Var<T>(name);
-			var decl = new UniformVarDeclare<T>(var);
+			var decl = new UniformVarDeclare<T>(var, binding);
 			Append(decl);
 			return var;
 		}

@@ -84,9 +84,14 @@ namespace UnlimitedShaderForks.GLSLBuilder
 		{
 			var fn = new FunctionCollection();
 			var body = new ShaderBody();
-			var time = body.DeclareUniform<float>("Time");
+			var time = body.DeclareUniform<float>("Time", 0);
+			var offset = body.DeclareUniform<Vector2>("Offset", 1);
+			var zoom = body.DeclareUniform<float>("Zoom", 2);
 			var position = body.DeclareIn<Vector2>("fsin_Position");
 			var colorOut = body.DeclareOut<Vector4>("fsout_Color");
+
+			var dur = body.Declare<float>("dur", (6.85714285714f / 4.0f));
+			var timeD = body.Declare<float>("timeDur", 2f * time / dur);
 
 			var pR = body.DeclareFunction<Vector2, float, Vector2>("pR", "p", "a");
 			pR.Set(pR.A1, (pR.A1 * fn.cos_f.Call(pR.A2)) + (fn.vec2_ff.Call(pR.A1.Y(), -pR.A1.X()) * fn.sin_f.Call(pR.A2)));
@@ -98,11 +103,16 @@ namespace UnlimitedShaderForks.GLSLBuilder
 			var noise = body.DeclareFunction<Vector2, float, float>("noise", "uv", "intensity");
 			noise.Return(fn.min_ff.Call(1f, (1f / (rand1d.Call((noise.A1.X() * 20f) + 1f) + rand1d.Call(noise.A1.Y() * 40f))) * noise.A2));
 
+			var spikeFunc = body.DeclareFunction<float, float>("spikeFunc", "x");
+			spikeFunc.Append("return max(min(min(fract(x / -2.) * 2. -1., sin((x + 1.) / 0.31831 ) + 1.), sin((x - 1.278) / 0.31831) + 0.645), 0.)");
+
 			var main = body.DeclareFunction<_Void>("main");
 			var uv = main.Declare<Vector2>("uv", position);
+			main.Set(uv, (uv / 2f) - offset);
+			main.Set(uv, uv * (1f + zoom * zoom));
 			var c = main.Declare<Vector3>("c", new Vector3(0f));
 
-			//main.Set(uv, uv + noise.Call(fn.Vec2(time), 0.5f) * 0.02f);
+			//main.Set(uv, fn.Vec2(uv.X() + 0.1f * (spikeFunc.Call(timeD) * fn.Sin(timeD * 60f)), uv.Y()));
 
 			_vc = new ValueCollection(new IStatement[] {
 				fn.sin_f,
@@ -124,25 +134,28 @@ namespace UnlimitedShaderForks.GLSLBuilder
 				uv.X() * 20f,
 				uv.Y() * 20f,
 				fn.Length(uv),
+				fn.Length(uv),
+				fn.Length(uv),
 				CompositeFn.From((a1, a2) => fn.Length(fn.Vec2(a1, a2))),
-				fn.Sin(2 * time * 1.57f),
-				fn.Tan(2 * time) / 2f,
-				time * 2f,
-				CompositeFn.From((a1, a2) => pR.Call(fn.Vec2(a1, a2), time).X()),
-				CompositeFn.From((a1, a2) => pR.Call(fn.Vec2(a1, a2), time).Y()),
+				fn.Sin(2 * timeD * 1.57f),
+				fn.Tan(2 * timeD) / 2f,
+				timeD,
+				CompositeFn.From((a1, a2) => pR.Call(fn.Vec2(a1, a2), timeD).X()),
+				CompositeFn.From((a1, a2) => pR.Call(fn.Vec2(a1, a2), timeD).Y()),
 				CompositeFn.From((a1, a2) => pR.Call(fn.Vec2(uv.X(), a1), a2).X()), // 4
 				CompositeFn.From((a1) => pR.Call(uv, a1).X()), // 4
 				CompositeFn.From((a1) => pR.Call(uv, a1).Y()), // 4
 				rand1d,
 				uv.X(),
 				uv.Y(),
+				fn.Step(timeD, 0.5f),
 			});
 
 			var r = main.Declare<Vector3>("r", new Vector3(0.68f, 0.18f, 0.14f));
 			var g = main.Declare<Vector3>("g", new Vector3(0.87f, 0.89f, 0.78f));
 			var b = main.Declare<Vector3>("b", new Vector3(0f, 0.6f, 0.96f));
 
-			var l = main.Declare<float>("l", fn.Clamp(_vc.Complicate(times: 100), 0f, 0.95f));
+			var l = main.Declare<float>("l", fn.Clamp(_vc.Complicate(times: 1000), 0f, 0.95f));
 			main.Set(c, fn.Vec3(1f / _vc.Complicate(100), 1f / _vc.Complicate(100), 1f / _vc.Complicate(100)));
 			main.Set(c, c * 0.9f);
 
@@ -151,28 +164,14 @@ namespace UnlimitedShaderForks.GLSLBuilder
 			main.Set(actualColor, actualColor - fn.Vec3(c.Y()) * g);
 			main.Set(actualColor, actualColor - fn.Vec3(c.Z()) * b);
 			main.Set(c, fn.Vec3(l) * actualColor);
-			//main.Set(c, c + noise.Call(pR.Call(uv, time), 0.5f) * 0.021f);
+			main.Set(c, c + noise.Call(pR.Call(uv, time), 0.5f) * 0.021f);
 
 			main.Set(c, fn.Max(c, fn.Vec3(0f)));
 			main.Set(c, c * fn.Smoothstep(0.1f, 0.3f, time)); // fade in
-			//main.Set(c, c - (fn.Smoothstep(0.55f, 1.3f, fn.Abs(uv.X())) * 0.2f));
-			//main.Set(c, c - (fn.Smoothstep(0.17f, 0.7f, fn.Abs(uv.Y())) * 0.2f));
-			//main.Set(c, c + fn.Sin(time * 0.4f) * 0.02f);
-			//main.Set(c, fn.Max(c, new Vector3(0.04f)));
-			//main.Set(c, c - fn.Step(0.65f, fn.Abs(uv.Y())));
-
-			//main.Append(@"
-			//	// grading
-			//	c -= 0.02;
-			//	c *= 1.1;
-			//	c = sqrt(c);
-			//	c = c * c * (2.5 - 1.5 * c * c); // contrast
-			//	c = pow(c, vec3(1.0, 0.96, 1.0)); // soft green
-			//	c *= vec3(1.08, 0.99, 0.99); // tint red
-			//	c.z = (c.z + 0.05) / 1.05; // bias blue
-			//	c = mix(c, c.yyy, 0.12); // desaturate");
 
 			//main.Set(c, fn.Vec3(0f + fn.Step(0f, uv.X() + uv.Y())));
+
+			//main.Set(c, c + spikeFunc.Call(timeD));
 
 			main.Set(colorOut, fn.Vec4(c, 1f));
 			return body.ToString();

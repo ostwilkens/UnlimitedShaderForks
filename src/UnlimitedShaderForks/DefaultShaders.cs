@@ -45,6 +45,8 @@ layout(set = 0, binding = 2) uniform _Time { float Time; };
 layout(location = 0) in vec2 fsin_Position;
 layout(location = 0) out vec4 fsout_Color;
 
+#define DUR (6.85714285714 / 4.0) // duration
+
 float rand1d(float n)
 {
 	return fract(sin(n) * 43758.5453);
@@ -65,9 +67,17 @@ float smoothStairs(float x)
 	return (sin((fract(x)-0.5) / 0.32) * 0.5 + floor(x));
 }
 
+float spikeFunc(float x)
+{
+	return max(min(min(fract(x / -2.) * 2. -1., sin((x + 1.) / 0.31831 ) + 1.), sin((x - 1.278) / 0.31831) + 0.645), 0.);
+}
+
 void main()
 {
 	vec2 uv = fsin_Position/2. + 0.5;
+
+	//uv *= 1. + spikeFunc(4. * Time / DUR);
+
 
 	float dx = abs(0.5-uv.x);
 	float dy = abs(0.5-uv.y);
@@ -75,8 +85,9 @@ void main()
 	dy *= dy;
 	uv -= 0.5;
 	uv *= 1.02;
-	uv.x *= 1.0 + (dy * 0.15);
-	uv.y *= 1.0 + (dx * 0.1);
+	uv.x *= 1.0 + (dy * 0.15 / (1. + 3. * spikeFunc(4. * Time / DUR)));
+	uv.y *= 1.0 + (dx * 0.1 * (1. + 3. * spikeFunc(4. * Time / DUR)));
+	uv.y *= (1. - 0.1 * spikeFunc(4. * Time / DUR));
 	uv += 0.5;
 
 	// distortions
@@ -89,7 +100,7 @@ void main()
 	c = clamp(c, 0., 1.);
 
 	//c /= 1. + overbleed;
-	//c += (underbleed * 3.).grb;
+	c += (underbleed * 3.).grb;
 
 	// grading
 	c -= 0.02;
