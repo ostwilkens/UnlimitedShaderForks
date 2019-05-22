@@ -90,7 +90,7 @@ namespace UnlimitedShaderForks.GLSLBuilder
 			var position = body.DeclareIn<Vector2>("fsin_Position");
 			var colorOut = body.DeclareOut<Vector4>("fsout_Color");
 
-			var dur = body.Declare<float>("dur", (6.85714285714f / 4.0f));
+			var dur = body.Declare<float>("dur", (7.5f / 4.0f));
 			var timeD = body.Declare<float>("timeDur", 2f * time / dur);
 
 			var pR = body.DeclareFunction<Vector2, float, Vector2>("pR", "p", "a");

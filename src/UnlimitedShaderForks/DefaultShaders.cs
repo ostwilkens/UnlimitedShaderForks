@@ -45,7 +45,7 @@ layout(set = 0, binding = 2) uniform _Time { float Time; };
 layout(location = 0) in vec2 fsin_Position;
 layout(location = 0) out vec4 fsout_Color;
 
-#define DUR (6.85714285714 / 4.0) // duration
+#define DUR (7.5 / 4.0) // duration
 
 float rand1d(float n)
 {
