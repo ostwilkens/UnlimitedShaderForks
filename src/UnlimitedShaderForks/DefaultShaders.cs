@@ -45,7 +45,7 @@ layout(set = 0, binding = 2) uniform _Time { float Time; };
 layout(location = 0) in vec2 fsin_Position;
 layout(location = 0) out vec4 fsout_Color;
 
-#define DUR (7.5 / 4.0) // duration
+#define DUR (7.5 / 8.0) // duration
 
 float rand1d(float n)
 {
@@ -69,6 +69,7 @@ float smoothStairs(float x)
 
 float spikeFunc(float x)
 {
+	return 0.;
 	return max(min(min(fract(x / -2.) * 2. -1., sin((x + 1.) / 0.31831 ) + 1.), sin((x - 1.278) / 0.31831) + 0.645), 0.);
 }
 
@@ -104,6 +105,7 @@ void main()
 
 	// grading
 	c -= 0.02;
+	c = max(vec3(0.), c);
 	c *= 1.1;
 	c = sqrt(c);
 	c = c * c * (2.5 - 1.5 * c * c); // contrast

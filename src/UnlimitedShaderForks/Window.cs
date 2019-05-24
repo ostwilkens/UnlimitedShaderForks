@@ -41,7 +41,7 @@ namespace UnlimitedShaderForks
 			_window = VeldridStartup.CreateWindow(ref windowCreateInfo);
 			_gd = VeldridStartup.CreateGraphicsDevice(
 				_window,
-				new GraphicsDeviceOptions { PreferStandardClipSpaceYDirection = true }, 
+				new GraphicsDeviceOptions { PreferStandardClipSpaceYDirection = true, SyncToVerticalBlank = true }, 
 				GraphicsBackend.Vulkan);
 			_factory = _gd.ResourceFactory;
 

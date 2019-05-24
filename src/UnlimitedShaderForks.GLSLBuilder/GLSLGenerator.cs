@@ -90,8 +90,8 @@ namespace UnlimitedShaderForks.GLSLBuilder
 			var position = body.DeclareIn<Vector2>("fsin_Position");
 			var colorOut = body.DeclareOut<Vector4>("fsout_Color");
 
-			var dur = body.Declare<float>("dur", (7.5f / 4.0f));
-			var timeD = body.Declare<float>("timeDur", 2f * time / dur);
+			var beatLen = body.Declare<float>("beat", (7.5f / 8.0f));
+			var beats = body.Declare<float>("beats", time / beatLen);
 
 			var pR = body.DeclareFunction<Vector2, float, Vector2>("pR", "p", "a");
 			pR.Set(pR.A1, (pR.A1 * fn.cos_f.Call(pR.A2)) + (fn.vec2_ff.Call(pR.A1.Y(), -pR.A1.X()) * fn.sin_f.Call(pR.A2)));
@@ -105,6 +105,25 @@ namespace UnlimitedShaderForks.GLSLBuilder
 
 			var spikeFunc = body.DeclareFunction<float, float>("spikeFunc", "x");
 			spikeFunc.Append("return max(min(min(fract(x / -2.) * 2. -1., sin((x + 1.) / 0.31831 ) + 1.), sin((x - 1.278) / 0.31831) + 0.645), 0.)");
+
+			//float superclamp(float val, float start, float end)
+			//{
+			//	float dur = end - start;
+			//	float halfdur = dur / 2.;
+			//	float prog = clamp(val, start, end) - start;
+			//	return (halfdur - abs(prog - halfdur)) / halfdur;
+			//}
+
+			var superclamp = body.DeclareFunction<float, float, float, float>("superclamp", "val", "start", "end");
+			{
+				var val = superclamp.A1;
+				var start = superclamp.A2;
+				var end = superclamp.A3;
+				var dur = superclamp.Declare("dur", end - start);
+				var halfdur = superclamp.Declare("halfdur", dur / 2f);
+				var prog = superclamp.Declare("prog", fn.Clamp(val, start, end) - start);
+				superclamp.Return((halfdur - fn.Abs(prog - halfdur)) / halfdur); 
+			}
 
 			var main = body.DeclareFunction<_Void>("main");
 			var uv = main.Declare<Vector2>("uv", position);
@@ -137,18 +156,18 @@ namespace UnlimitedShaderForks.GLSLBuilder
 				fn.Length(uv),
 				fn.Length(uv),
 				CompositeFn.From((a1, a2) => fn.Length(fn.Vec2(a1, a2))),
-				fn.Sin(2 * timeD * 1.57f),
-				fn.Tan(2 * timeD) / 2f,
-				timeD,
-				CompositeFn.From((a1, a2) => pR.Call(fn.Vec2(a1, a2), timeD).X()),
-				CompositeFn.From((a1, a2) => pR.Call(fn.Vec2(a1, a2), timeD).Y()),
+				fn.Sin(2 * beats * 1.57f),
+				fn.Tan(2 * beats) / 2f,
+				beats,
+				CompositeFn.From((a1, a2) => pR.Call(fn.Vec2(a1, a2), beats).X()),
+				CompositeFn.From((a1, a2) => pR.Call(fn.Vec2(a1, a2), beats).Y()),
 				CompositeFn.From((a1, a2) => pR.Call(fn.Vec2(uv.X(), a1), a2).X()), // 4
 				CompositeFn.From((a1) => pR.Call(uv, a1).X()), // 4
 				CompositeFn.From((a1) => pR.Call(uv, a1).Y()), // 4
 				rand1d,
 				uv.X(),
 				uv.Y(),
-				fn.Step(timeD, 0.5f),
+				fn.Step(beats, 0.5f),
 			});
 
 			var r = main.Declare<Vector3>("r", new Vector3(0.68f, 0.18f, 0.14f));
@@ -170,8 +189,15 @@ namespace UnlimitedShaderForks.GLSLBuilder
 			main.Set(c, c * fn.Smoothstep(0.1f, 0.3f, time)); // fade in
 
 			//main.Set(c, fn.Vec3(0f + fn.Step(0f, uv.X() + uv.Y())));
+			//main.Set(c, fn.Clamp(c, 0f, 1f));
 
 			//main.Set(c, c + spikeFunc.Call(timeD));
+			var testa = main.Declare("testa", superclamp.Call(fn.Fract(beats * 4f), 0f, 0.1f));
+			//var testb = main.Declare("testb", superclamp.Call(fn.Fract(((beats + 0.1f) * 4f)), 0f, 0.2f));
+
+			var t = fn.Step(0.2f, fn.Length(uv));
+
+			main.Set(c, fn.Vec3(t) * fn.Vec3(testa * 0.2f, 0f, 0f));
 
 			main.Set(colorOut, fn.Vec4(c, 1f));
 			return body.ToString();
