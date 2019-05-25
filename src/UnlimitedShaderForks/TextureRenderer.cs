@@ -10,13 +10,13 @@ namespace UnlimitedShaderForks
 	public struct TextureRendererArgs
 	{
 		public string FragmentCode { get; set; }
-		public Stopwatch Stopwatch { get; set; }
+		public Time Time { get; set; }
 		public View View { get; set; }
 
-		public TextureRendererArgs(string fragmentCode, Stopwatch stopwatch, View view)
+		public TextureRendererArgs(string fragmentCode, Time time, View view)
 		{
 			this.FragmentCode = fragmentCode;
-			this.Stopwatch = stopwatch;
+			this.Time = time;
 			this.View = view;
 		}
 	}
@@ -29,17 +29,17 @@ namespace UnlimitedShaderForks
 		protected Texture _texture;
 		public Texture Texture => _texture;
 		public string FragmentCode { get; set; }
-		public Stopwatch Stopwatch { get; set; }
+		public Time Time { get; set; }
 		public View View { get; set; }
 
-		public TextureRenderer(GraphicsDevice gd, string fragmentCode, Stopwatch sw, View view) : base(gd, new TextureRendererArgs(fragmentCode, sw, view))
+		public TextureRenderer(GraphicsDevice gd, string fragmentCode, Time time, View view) : base(gd, new TextureRendererArgs(fragmentCode, time, view))
 		{
 		}
 
 		protected override void Initialize(TextureRendererArgs args)
 		{
 			this.FragmentCode = args.FragmentCode;
-			this.Stopwatch = args.Stopwatch;
+			this.Time = args.Time;
 			this.View = args.View;
 
 			_timeBuffer = _factory.CreateBuffer(new BufferDescription(16, BufferUsage.UniformBuffer));
@@ -86,7 +86,7 @@ namespace UnlimitedShaderForks
 
 		public override void UpdateResources()
 		{
-			_gd.UpdateBuffer(_timeBuffer, 0, (float)Stopwatch.Elapsed.TotalSeconds);
+			_gd.UpdateBuffer(_timeBuffer, 0, (float)Time.ElapsedSeconds);
 			_gd.UpdateBuffer(_offsetBuffer, 0, View.Offset);
 			_gd.UpdateBuffer(_zoomBuffer, 0, View.Zoom);
 		}

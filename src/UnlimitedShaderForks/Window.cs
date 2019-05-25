@@ -22,33 +22,53 @@ namespace UnlimitedShaderForks
 		private GraphicsDevice _gd;
 		private ResourceFactory _factory;
 		private CommandList _cl;
-		private Stopwatch _swLifetime = new Stopwatch();
+		//private Stopwatch _swLifetime = new Stopwatch();
 		private Stopwatch _swThisSecond = new Stopwatch();
 		private int _framesThisSecond = 0;
 		private TextureRenderer _textureRenderer;
 		private PassthroughRenderer _passthroughRenderer;
+		private Audio _audio;
+		private Time _time = new Time();
+		public Time Time => _time;
 
 		public bool Exists => _window.Exists;
 		public void Close() => _window.Close();
-		public Stopwatch Time => _swLifetime;
+		//public Stopwatch Time => _swLifetime;
 
 		public View View { get; set; } = new View();
 
-		public Window(WindowCreateInfo windowCreateInfo)
+		public void SyncAudio() => _audio.CurrentTime = _time.Elapsed;
+
+		public Window(WindowCreateInfo windowCreateInfo, Audio audio)
 		{
-			_swLifetime.Start();
+			//_swLifetime.Start();
 			_swThisSecond.Start();
 			_window = VeldridStartup.CreateWindow(ref windowCreateInfo);
+			_window.Shown += _window_Shown;
 			_gd = VeldridStartup.CreateGraphicsDevice(
 				_window,
 				new GraphicsDeviceOptions { PreferStandardClipSpaceYDirection = true, SyncToVerticalBlank = true }, 
-				GraphicsBackend.Vulkan);
+				GraphicsBackend.OpenGL);
 			_factory = _gd.ResourceFactory;
+			_audio = audio;
 
 			_cl = _factory.CreateCommandList();
 
-			_textureRenderer = new TextureRenderer(_gd, DefaultShaders.FragmentCode, _swLifetime, View);
-			_passthroughRenderer = new PassthroughRenderer(_gd, _textureRenderer.Texture, _swLifetime);
+			_textureRenderer = new TextureRenderer(_gd, DefaultShaders.FragmentCode, Time, View);
+			_passthroughRenderer = new PassthroughRenderer(_gd, _textureRenderer.Texture, Time);
+
+			audio.OnRepeat += (s, a) => SyncAudio();
+			_time.OnStart += (s, a) => audio.Play();
+			_time.OnStop += (s, a) => audio.Stop();
+			_time.OnStep += (s, a) => SyncAudio();
+			_time.OnTimescaleChanged += (s, a) => audio.PlaybackRate = (float)((Time)s).Timescale;
+		}
+
+		private void _window_Shown()
+		{
+			_time.Start();
+			SyncAudio();
+			//_audio.Play();
 		}
 
 		private void UpdateFps()
@@ -92,7 +112,7 @@ namespace UnlimitedShaderForks
 			set
 			{
 				_textureRenderer.FragmentCode = value;
-				Console.WriteLine(value);
+				//Console.WriteLine(value);
 				_textureRenderer.ReloadShaders();
 			}
 		}

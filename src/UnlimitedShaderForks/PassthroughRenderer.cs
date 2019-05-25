@@ -10,12 +10,12 @@ namespace UnlimitedShaderForks
 	public struct PassthroughRendererArgs
 	{
 		public Texture Texture { get; set; }
-		public Stopwatch Stopwatch { get; set; }
+		public Time Time { get; set; }
 
-		public PassthroughRendererArgs(Texture texture, Stopwatch stopwatch)
+		public PassthroughRendererArgs(Texture texture, Time time)
 		{
 			this.Texture = texture;
-			this.Stopwatch = stopwatch;
+			this.Time = time;
 		}
 	}
 
@@ -23,15 +23,15 @@ namespace UnlimitedShaderForks
 	{
 		protected DeviceBuffer _timeBuffer;
 		protected TextureView _textureBuffer;
-		public Stopwatch Stopwatch { get; set; }
+		public Time Time { get; set; }
 
-		public PassthroughRenderer(GraphicsDevice gd, Texture texture, Stopwatch sw) : base(gd, new PassthroughRendererArgs(texture, sw))
+		public PassthroughRenderer(GraphicsDevice gd, Texture texture, Time time) : base(gd, new PassthroughRendererArgs(texture, time))
 		{
 		}
 
 		protected override void Initialize(PassthroughRendererArgs args)
 		{
-			this.Stopwatch = args.Stopwatch;
+			this.Time = args.Time;
 
 			_textureBuffer = _factory.CreateTextureView(args.Texture);
 			_timeBuffer = _factory.CreateBuffer(new BufferDescription(16, BufferUsage.UniformBuffer));
@@ -59,7 +59,7 @@ namespace UnlimitedShaderForks
 
 		public override void UpdateResources()
 		{
-			_gd.UpdateBuffer(_timeBuffer, 0, (float)Stopwatch.Elapsed.TotalSeconds);
+			_gd.UpdateBuffer(_timeBuffer, 0, (float)Time.ElapsedSeconds);
 		}
 	}
 }

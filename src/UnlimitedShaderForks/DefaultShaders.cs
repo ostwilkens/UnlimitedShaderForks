@@ -69,7 +69,6 @@ float smoothStairs(float x)
 
 float spikeFunc(float x)
 {
-	return 0.;
 	return max(min(min(fract(x / -2.) * 2. -1., sin((x + 1.) / 0.31831 ) + 1.), sin((x - 1.278) / 0.31831) + 0.645), 0.);
 }
 
@@ -85,9 +84,9 @@ void main()
 	dx *= dx;
 	dy *= dy;
 	uv -= 0.5;
-	uv *= 1.02;
-	uv.x *= 1.0 + (dy * 0.15 / (1. + 3. * spikeFunc(4. * Time / DUR)));
-	uv.y *= 1.0 + (dx * 0.1 * (1. + 3. * spikeFunc(4. * Time / DUR)));
+	uv *= 1.03;
+	uv.x *= 1.0 + (dy * 0.15 / (1. + 1. * spikeFunc(4. * Time / DUR)));
+	uv.y *= 1.0 + (dx * 0.1 * (1. + 1. * spikeFunc(4. * Time / DUR)));
 	uv.y *= (1. - 0.1 * spikeFunc(4. * Time / DUR));
 	uv += 0.5;
 
@@ -113,11 +112,11 @@ void main()
 	c *= vec3(1.08, 0.99, 0.99); // tint red
 	c.z = (c.z + 0.05) / 1.05; // bias blue
 	c = mix(c, c.yyy, 0.12); // desaturate
-	c += noise(pR(floor(uv * 400.) / 400., Time), 0.5f) * 0.15f;
+	c += noise(pR(floor(uv * 400.) / 400., Time), 0.5f) * 0.1f;
 
 	// noise
 	c = clamp(c, 0.04, 1.);
-	c += noise(pR(floor(uv * 200.) / 200., Time), 0.5) * 0.05;
+	//c += noise(pR(floor(uv * 200.) / 200., Time), 0.5) * 0.05;
 
 	// scanlines
 	uv.y -= 0.001;
@@ -136,7 +135,7 @@ void main()
 	c *= 1. - smoothstep(0.17, 0.7, abs(uv.y - 0.5)) * 0.2; // vignette y
 	c *= 1.3;
 	//c += sin(Time * 0.4) * 0.02; // ambience
-	c *= 1. - step(0.35, abs(uv.y - 0.5)); // letterbox
+	c *= 1. - step(0.48, abs(uv.y - 0.5)); // letterbox
 
 	// clip edges
 	if(uv.y > 1.0 || uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0)

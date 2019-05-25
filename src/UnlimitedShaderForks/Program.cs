@@ -2,6 +2,7 @@
 using System.IO;
 using System.Numerics;
 using System.Text;
+using System.Threading.Tasks;
 using UnlimitedShaderForks.GLSLBuilder;
 using Veldrid;
 using Veldrid.Sdl2;
@@ -14,8 +15,9 @@ namespace UnlimitedShaderForks
 	{
 		static void Main(params string[] args)
 		{
+			var audio = Audio.Load("audio.mp3", 1f, true);
 			var windowCreateInfo = new WindowCreateInfo(100, 100, 1280, 720, WindowState.Normal, "Demo");
-			var window = new Window(windowCreateInfo);
+			var window = new Window(windowCreateInfo, audio);
 			var gen = new GLSLGenerator();
 			window.FragmentCode = args.Length > 0 ? File.ReadAllText(args[0]) : gen.Generate();
 
@@ -65,20 +67,46 @@ namespace UnlimitedShaderForks
 								window.Close();
 								break;
 							case Key.R:
+								window.Time.Restart();
+								break;
+							case Key.N:
 								window.FragmentCode = gen.Generate();
 								window.View.Offset = new Vector2(0f);
 								window.View.Zoom = 0f;
 								break;
-							case Key.C:
-								window.View.Offset = new Vector2(0f);
-								window.View.Zoom = 0f;
-								window.Time.Restart();
+							case Key.J:
+								window.Time.Step(-2);
 								break;
+							case Key.L:
+								window.Time.Step(2);
+								break;
+							case Key.Comma:
+								window.Time.Step(-1d / 60d);
+								break;
+							case Key.Period:
+								window.Time.Step(1d / 60d);
+								break;
+							case Key.Z:
+								window.Time.Timescale += -0.1d;
+								break;
+							case Key.X:
+								window.Time.Timescale += 0.1d;
+								break;
+							case Key.C:
+								window.Time.Timescale = 1.0d;
+								break;
+							//case Key.S:
+							//	window.SyncAudio();
+							//	break;
+							//case Key.C:
+							//	window.View.Offset = new Vector2(0f);
+							//	window.View.Zoom = 0f;
+							//	window.Time.Restart();
+							//	audio.CurrentTime = window.Time.Elapsed;
+							//	break;
+							case Key.K:
 							case Key.Space:
-								if(window.Time.IsRunning)
-									window.Time.Stop();
-								else
-									window.Time.Start();
+								window.Time.Toggle();
 								break;
 							case Key.S:
 								File.WriteAllText($@"{DateTime.Now.Ticks}.frag", window.FragmentCode);
