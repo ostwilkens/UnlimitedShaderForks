@@ -91,14 +91,15 @@ namespace UnlimitedShaderForks.GLSLBuilder
 			}
 		}
 
-		private static Random _rand = new Random();
+		private static Random _rand;
 		private ValueCollection _vc;
 
-		public GLSLGenerator()
+		public GLSLGenerator(int seed)
 		{
+			_rand = new Random(seed);
 		}
 
-		public string Generate()
+		public string Generate(int it)
 		{
 			var fn = new FunctionCollection();
 			var body = new ShaderBody();
@@ -123,14 +124,6 @@ namespace UnlimitedShaderForks.GLSLBuilder
 
 			var spikeFunc = body.DeclareFunction<float, float>("spikeFunc", "x");
 			spikeFunc.Append("return max(min(min(fract(x / -2.) * 2. -1., sin((x + 1.) / 0.31831 ) + 1.), sin((x - 1.278) / 0.31831) + 0.645), 0.)");
-
-			//float superclamp(float val, float start, float end)
-			//{
-			//	float dur = end - start;
-			//	float halfdur = dur / 2.;
-			//	float prog = clamp(val, start, end) - start;
-			//	return (halfdur - abs(prog - halfdur)) / halfdur;
-			//}
 
 			var superclamp = body.DeclareFunction<float, float, float, float>("superclamp", "val", "start", "end");
 			{
@@ -162,147 +155,131 @@ namespace UnlimitedShaderForks.GLSLBuilder
 
 			//main.Set(uv, fn.Vec2(uv.X() + 0.1f * (spikeFunc.Call(timeD) * fn.Sin(timeD * 60f)), uv.Y()));
 
-			//_vc = new ValueCollection(new IStatement[] {
-			//	fn.sin_f,
-			//	fn.cos_f,
-			//	fn.tan_f, // 3
-			//	//CompositeFn.From((a1, a2) => a1 * a2), // 1
-			//	CompositeFn.From((a1, a2) => a1 / a2), // 2
-			//	CompositeFn.From((a1, a2) => a1 + a2), // 5
-			//	CompositeFn.From((a1, a2) => a1 - a2), // 3
-			//	CompositeFn.From(a1 => fn.Round(a1 * 10f) / 10f), // 2
-			//	CompositeFn.From(a1 => fn.Floor(a1 * 10f) / 10f), // 2
-			//	CompositeFn.From(a1 => -a1), // 2
-			//	CompositeFn.From(a1 => fn.Tan(a1) / 2f),
-			//	fn.max_ff, // 3
-			//	//fn.min_ff, // 1
-			//	CompositeFn.From((a1, a2) => fn.Length(fn.Vec2(a1, a2))),
-			//	CompositeFn.From(a1 => fn.Smoothstep(a1, 0.97f, 1f)),
-			//	new ActualValue<float>(3.1416f),
-			//	uv.X() * 20f,
-			//	uv.Y() * 20f,
-			//	fn.Length(uv) * 10f,
-			//	//fn.Length(uv),
-			//	//fn.Length(uv),
-			//	CompositeFn.From((a1, a2) => fn.Length(fn.Vec2(a1, a2))),
-			//	fn.Sin(1 * beats * 1.57f),
-			//	fn.Tan(1 * beats) / 2f,
-			//	//beats,
-			//	CompositeFn.From((a1, a2) => pR.Call(fn.Vec2(a1, a2), beats).X()),
-			//	CompositeFn.From((a1, a2) => pR.Call(fn.Vec2(a1, a2), beats).Y()),
-			//	CompositeFn.From((a1, a2) => pR.Call(fn.Vec2(uv.X(), a1), a2).X()), // 4
-			//	CompositeFn.From((a1) => pR.Call(uv, a1).X()), // 4
-			//	CompositeFn.From((a1) => pR.Call(uv, a1).Y()), // 4
-			//	//rand1d,
-			//	//uv.X() * 10f,
-			//	//uv.Y() * 10f,
-			//	//audio1,
-			//	//audio2,
-			//	//audio3,
-			//});
-
 			_vc = new ValueCollection(new IStatement[] {
 				fn.sin_f,
 				CompositeFn.From((a1, a2) => a1 + a2),
 				fn.Length(uv) * 10f,
 			});
 
-			_vc.Append(new IStatement[] {
-				uv.X() * 2f,
-				uv.Y() * 1.5f,
-			});
+			if(it > 1)
+				_vc.Append(new IStatement[] {
+					uv.X() * 2f,
+					uv.Y() * 1.5f,
+				});
 
-			_vc.Append(new IStatement[] {
+			if (it > 2)
+				_vc.Append(new IStatement[] {
 				new ActualValue<float>(3.1416f),
 				CompositeFn.From(a1 => fn.Floor(a1 * 7f) / 7f),
 			});
 
-			_vc.Append(new IStatement[] {
+			if (it > 3)
+				_vc.Append(new IStatement[] {
 				CompositeFn.From(a1 => fn.Round(a1 * 7f) / 7f),
 				CompositeFn.From(a1 => -a1),
 			});
 
-			_vc.Append(new IStatement[] {
+			if (it > 4)
+				_vc.Append(new IStatement[] {
 				fn.Sin(beats * 1.57f * 0.25f),
 			});
 
-			_vc.Append(new IStatement[] {
+			if (it > 5)
+				_vc.Append(new IStatement[] {
 				uv.X() * 10f,
 				uv.Y() * 8f,
 			});
 
-			_vc.Append(new IStatement[] {
+			if (it > 6)
+				_vc.Append(new IStatement[] {
 				audio3,
 			});
 
-			_vc.Append(new IStatement[] {
+			if (it > 7)
+				_vc.Append(new IStatement[] {
 				audio1,
 				audio2,
 			});
 
-			_vc.Append(new IStatement[] {
+			if (it > 8)
+				_vc.Append(new IStatement[] {
 				fn.cos_f,
 			});
 
-			_vc.Append(new IStatement[] {
+			if (it > 9)
+				_vc.Append(new IStatement[] {
 				fn.Sin(beats * 1.57f * 0.5f) * 4f,
 			});
 
-			_vc.Append(new IStatement[] {
+			if (it > 10)
+				_vc.Append(new IStatement[] {
 				CompositeFn.From(a1 => fn.Tan(a1) / 2f),
 			});
 
-			_vc.Append(new IStatement[] {
+			if (it > 11)
+				_vc.Append(new IStatement[] {
 				CompositeFn.From((a1, a2) => a1 - a2),
 			});
 
-			_vc.Append(new IStatement[] {
+			if (it > 12)
+				_vc.Append(new IStatement[] {
 				fn.max_ff,
 			});
 
-			_vc.Append(new IStatement[] {
+			if (it > 13)
+				_vc.Append(new IStatement[] {
 				fn.Tan(beats * 3.14f * 0.5f) / 2f,
 			});
 
-			_vc.Append(new IStatement[] {
+			if (it > 14)
+				_vc.Append(new IStatement[] {
 				CompositeFn.From(a1 => fn.Smoothstep(a1, 0f, 0.1f)),
 			});
 
-			_vc.Append(new IStatement[] {
+			if (it > 15)
+				_vc.Append(new IStatement[] {
 				CompositeFn.From((a1) => pR.Call(uv * 1.5f, a1).Y()),
 			});
 
-			_vc.Append(new IStatement[] {
+			if (it > 16)
+				_vc.Append(new IStatement[] {
 				CompositeFn.From((a1) => pR.Call(uv * 1.5f, a1).X()),
 			});
 
-			_vc.Append(new IStatement[] {
+			if (it > 17)
+				_vc.Append(new IStatement[] {
 				new ActualValue<float>(4f),
 			});
 
-			_vc.Append(new IStatement[] {
+			if (it > 18)
+				_vc.Append(new IStatement[] {
 				CompositeFn.From((a1, a2) => fn.Length(fn.Vec2(a1, a2))),
 			});
 
-			_vc.Append(new IStatement[] {
+			if (it > 19)
+				_vc.Append(new IStatement[] {
 				CompositeFn.From((a1, a2) => pR.Call(fn.Vec2(uv.X() * 10f, a1), a2).X()),
 			});
 
-			_vc.Append(new IStatement[] {
+			if (it > 20)
+				_vc.Append(new IStatement[] {
 				CompositeFn.From((a1, a2) => pR.Call(fn.Vec2(uv.Y() * 10f, a1), a2).Y()),
 			});
 
-			_vc.Append(new IStatement[] {
+			if (it > 21)
+				_vc.Append(new IStatement[] {
 				CompositeFn.From((a1, a2) => pR.Call(fn.Vec2(a1, a2), beats * 0.25f).X()),
 				CompositeFn.From((a1, a2) => pR.Call(fn.Vec2(a1, a2), beats * 0.25f).Y()),
 			});
 
-			_vc.Append(new IStatement[] {
+			if (it > 22)
+				_vc.Append(new IStatement[] {
 				CompositeFn.From((a1) => pR.Call(uv * 5f, a1).X()),
 				CompositeFn.From((a1) => pR.Call(uv * 5f, a1).Y()),
 			});
 
-			_vc.Append(new IStatement[] {
+			if (it > 23)
+				_vc.Append(new IStatement[] {
 				CompositeFn.From((a1, a2) => (a1 / (1.3f / a2))),
 			});
 
