@@ -140,7 +140,9 @@ namespace UnlimitedShaderForks.GLSLBuilder
 
 			var audio1 = main.Declare("audio1", fn.Max(0f, 0.1f - fn.Fract(beats * 4f + 0.04f)));
 			var audio2 = main.Declare("audio2", fn.Max(0f, 0.1f - fn.Fract(beats * 4f + 0.05f - 0.4f)));
-			var audio3 = main.Declare("audio3", fn.Step(6.35f, (fn.Fract(beats / 2f) * 2f) * 4f) - fn.Step(8f, (fn.Fract(beats / 2f) * 2f) * 4f));
+			//var audio3 = main.Declare("audio3", fn.Step(6.35f, (fn.Fract(beats / 2f) * 2f) * 4f) - fn.Step(8f, (fn.Fract(beats / 2f) * 2f) * 4f));
+			var audio3 = main.Declare("audio3", fn.Step(1.5f, fn.Fract(beats / 2f) * 2f) - fn.Step(8f, fn.Fract(beats / 2f) * 2f));
+			//var audio3 = main.Declare("audio3", )
 
 			var uv = main.Declare<Vector2>("uv", position);
 
@@ -299,7 +301,9 @@ namespace UnlimitedShaderForks.GLSLBuilder
 			main.Set(c, c + noise.Call(pR.Call(uv, time), 0.5f) * 0.021f);
 
 			main.Set(c, fn.Max(c, fn.Vec3(0f)));
-			main.Set(c, c * fn.Smoothstep(0.1f, 0.3f, time)); // fade in
+			main.Set(c, c / fn.Smoothstep(0.1f, 0.3f, fn.Fract((beats) / 2f) * 2f)); // fade in
+
+			//c = (c / smoothstep(0.1, 0.3, fract((beats + 2.) / 4.) * 4.));
 
 			//main.Set(c, fn.Vec3(0f + fn.Step(0f, uv.X() + uv.Y())));
 			//main.Set(c, fn.Clamp(c, 0f, 1f));
