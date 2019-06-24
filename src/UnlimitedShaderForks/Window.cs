@@ -47,7 +47,7 @@ namespace UnlimitedShaderForks
 			_window.Shown += _window_Shown;
 			_gd = VeldridStartup.CreateGraphicsDevice(
 				_window,
-				new GraphicsDeviceOptions { PreferStandardClipSpaceYDirection = true, SyncToVerticalBlank = true }, 
+				new GraphicsDeviceOptions { PreferStandardClipSpaceYDirection = true, SyncToVerticalBlank = false }, 
 				GraphicsBackend.OpenGL);
 			_factory = _gd.ResourceFactory;
 			_audio = audio;
@@ -58,7 +58,7 @@ namespace UnlimitedShaderForks
 			_passthroughRenderer = new PassthroughRenderer(_gd, _textureRenderer.Texture, Time);
 
 			audio.OnRepeat += (s, a) => SyncAudio();
-			_time.OnStart += (s, a) => audio.Play();
+			//_time.OnStart += (s, a) => audio.Play();
 			_time.OnStop += (s, a) => audio.Stop();
 			_time.OnStep += (s, a) => SyncAudio();
 			_time.OnTimescaleChanged += (s, a) => audio.PlaybackRate = (float)((Time)s).Timescale;

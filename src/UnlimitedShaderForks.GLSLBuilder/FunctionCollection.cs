@@ -99,5 +99,14 @@ namespace UnlimitedShaderForks.GLSLBuilder
 
 		public readonly Fn<Vector3, Vector3, float> dot_v3v3 = new Fn<Vector3, Vector3, float>("dot");
 		public Value<float> Dot(Value<Vector3> a, Value<Vector3> b) => dot_v3v3.Call(a, b);
+
+		public readonly Fn<float, float, float> pow_ff = new Fn<float, float, float>("pow");
+		public Value<float> Pow(Value<float> a, Value<float> b) => pow_ff.Call(a, b);
+
+		public readonly Fn<float, float> sqrt_f = new Fn<float, float>("sqrt");
+		public Value<float> Sqrt(Value<float> a) => sqrt_f.Call(a);
+
+		public readonly Fn<Vector3, Vector3> sqrt_v3 = new Fn<Vector3, Vector3>("sqrt");
+		public Value<Vector3> Sqrt(Value<Vector3> a) => sqrt_v3.Call(a);
 	}
 }

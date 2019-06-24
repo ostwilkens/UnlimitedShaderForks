@@ -149,9 +149,19 @@ namespace UnlimitedShaderForks.GLSLBuilder
 		public static SubVar<Vector2, Vector3> Xyx(this Value<Vector2> value)
 		{
 			return new SubVar<Vector2, Vector3>(value, "xyx");
-        }
+		}
 
-        public static SubVar<Vector4, Vector2> Xy(this Value<Vector4> value)
+		public static SubVar<Vector2, Vector3> Yxx(this Value<Vector2> value)
+		{
+			return new SubVar<Vector2, Vector3>(value, "yxx");
+		}
+
+		public static SubVar<Vector2, Vector3> Xxy(this Value<Vector2> value)
+		{
+			return new SubVar<Vector2, Vector3>(value, "xxy");
+		}
+
+		public static SubVar<Vector4, Vector2> Xy(this Value<Vector4> value)
         {
             return new SubVar<Vector4, Vector2>(value, "xy");
         }

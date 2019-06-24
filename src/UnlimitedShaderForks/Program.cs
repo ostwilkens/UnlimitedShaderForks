@@ -16,9 +16,10 @@ namespace UnlimitedShaderForks
 		static void Main(params string[] args)
 		{
 			var audio = Audio.Load("audio.mp3", 1f, true);
-			var windowCreateInfo = new WindowCreateInfo(100, 100, 1920, 1080, WindowState.BorderlessFullScreen, "Demo");
+			var windowCreateInfo = new WindowCreateInfo(100, 100, 1280, 720, WindowState.Normal, "Demo");
 			var window = new Window(windowCreateInfo, audio);
-			var gen = new GLSLGenerator(11);
+			//var gen = new GLSLGenerator(1012);
+			var gen = new GLSLGenerator(1017);
 			window.FragmentCode = args.Length > 0 ? File.ReadAllText(args[0]) : gen.Generate(0);
 
 			Vector2 lastGrabPos = new Vector2(0f);
@@ -26,12 +27,12 @@ namespace UnlimitedShaderForks
 			int it = 0;
 			while (window.Exists)
 			{
-				int newit = (int)((window.Time.ElapsedSeconds + 0.4f) / 7.5f * 4f);
-				if(newit != it)
-				{
-					it = newit;
-					window.FragmentCode = gen.Generate(it);
-				}
+				//int newit = (int)((window.Time.ElapsedSeconds + 0.4f) / 7.5f * 4f);
+				//if(newit != it)
+				//{
+				//	it = newit;
+				//	window.FragmentCode = gen.Generate(it);
+				//}
 
 				var inputSnapshot = window.Update();
 
@@ -82,6 +83,7 @@ namespace UnlimitedShaderForks
 								window.FragmentCode = gen.Generate(it);
 								window.View.Offset = new Vector2(0f);
 								window.View.Zoom = 0f;
+								window.Time.Restart();
 								break;
 							case Key.J:
 								window.Time.Step(-2);
