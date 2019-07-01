@@ -100,7 +100,11 @@ void main()
 	c = clamp(c, 0., 1.);
 
 	//c /= 1. + overbleed;
-	c += (underbleed * 3.).grb;
+	c += (underbleed * 1.7).grb;
+
+	float colorFactor = max(0.01, 1.0 - (mod(Time / DUR, 0.5) * 5.0));
+	c *= 1. + colorFactor * 0.2;
+	c += colorFactor * 0.04;
 
 	// grading
 	c -= 0.02;
@@ -127,6 +131,10 @@ void main()
 	//c *= 1.05;
 
 	c += smoothstep(overbleed, vec3(0.), vec3(2.)) * 0.3;
+	//c *= 1. + spikeFunc(4. * Time / DUR);
+
+
+	
 
 	// fx
 	c -= smoothstep(0.15, 0.7, abs(uv.x - 0.5)) * 0.02; // vignette x

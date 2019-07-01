@@ -18,9 +18,9 @@ namespace UnlimitedShaderForks
 			var audio = Audio.Load("audio.mp3", 1f, true);
 			var windowCreateInfo = new WindowCreateInfo(100, 100, 1280, 720, WindowState.Normal, "Demo");
 			var window = new Window(windowCreateInfo, audio);
-			//var gen = new GLSLGenerator(1012);
-			var gen = new GLSLGenerator(1017);
-			window.FragmentCode = args.Length > 0 ? File.ReadAllText(args[0]) : gen.Generate(0);
+			var gen = new GLSLGenerator(1012);
+			//var gen = new GLSLGenerator(1017);
+			window.FragmentCode = args.Length > 0 ? File.ReadAllText(args[0]) : gen.Generate3(0);
 
 			Vector2 lastGrabPos = new Vector2(0f);
 			bool grabbing = false;
@@ -80,7 +80,7 @@ namespace UnlimitedShaderForks
 								break;
 							case Key.N:
 								it++;
-								window.FragmentCode = gen.Generate(it);
+								window.FragmentCode = gen.Generate3(it);
 								window.View.Offset = new Vector2(0f);
 								window.View.Zoom = 0f;
 								window.Time.Restart();
