@@ -99,7 +99,7 @@ namespace UnlimitedShaderForks.GLSLBuilder
 			_rand = new Random(seed);
 		}
 
-		public string Generate(int it)
+		public string Generate3(int it)
 		{
 			var fn = new FunctionCollection();
 			var body = new ShaderBody();
@@ -385,6 +385,7 @@ vec3 crap
 
 				var totalDist = march.Declare<float>("totalDist", 0f);
 				var p = march.Declare<Vector3>("p", cameraOrigin);
+
 				var dist = march.Declare<float>("dist", epsilon);
 				var resultColor = march.Declare<Vector3>("resultColor", fn.Vec3(0f));
 
@@ -432,6 +433,18 @@ vec3 crap
 				var uv = main.Declare<Vector2>("uv", position);
 				main.Set(uv, fn.Vec2(uv.X() * (16f / 9f), uv.Y()));
 
+				// audio glitching
+				var audio1 = main.Declare("audio1", fn.Max(0f, 0.2f - fn.Fract(beats * 2f + 0.0f)) * 0.6f);
+				//var audio2 = main.Declare("audio2", fn.Max(0f, 0.1f - fn.Fract(beats * 4f + 0.05f - 0.4f)));
+				//var audio3 = main.Declare("audio3", fn.Step(6.0f, (fn.Fract(beats / 2f) * 2f) * 4f) - fn.Step(8f, (fn.Fract(beats / 2f) * 2f) * 4f));
+				main.Set(uv, fn.Vec2(uv.X() + (audio1 * (noise.Call(pR.Call(fn.Vec2(uv.Y()), time), 0.2f) - 0.2f)), uv.Y()));
+				//main.Set(uv, fn.Vec2(uv.X() + (audio2 * (noise.Call(pR.Call(fn.Vec2(uv.Y()), time), 0.2f) - 0.2f)), uv.Y()));
+				//main.Set(uv, fn.Vec2(uv.X() + (audio3 * (noise.Call(pR.Call(fn.Vec2(uv.Y()), time), 0.2f) - 0.12f)), uv.Y()));
+
+				//var audio4 = main.Declare("audio4", fn.Max(0f, 0.1f - fn.Fract(beats * 0.5f - 1f)));
+				//var audio5 = main.Declare("audio5", fn.Max(0f, 0.1f - fn.Fract(beats * 0.5f + 0.5f)));
+				//main.Set(uv, fn.Vec2(uv.X() + (audio4 * 2f), uv.Y()));
+				//main.Set(uv, fn.Vec2(uv.X() - (audio5 * 2f), uv.Y()));
 
 				var c = main.Declare<Vector3>("c", new Vector3(0f));
 
@@ -456,7 +469,12 @@ vec3 crap
 
 				//main.Set(c, fn.Vec3(l));
 
-				main.Set(c, c + noise.Call(pR.Call(uv, time), 0.5f) * 0.021f); // noise
+				//main.Append("float colorFactor = max(0.01, 1.0 - (mod(beats, 0.5)) * 5.0)");
+				//main.Append("c = round(c / colorFactor) * colorFactor");
+				//main.Append("c *= 1. + colorFactor * 0.5");
+
+
+				//main.Set(c, c + noise.Call(pR.Call(uv, time), 0.5f) * 0.021f); // noise
 				//main.Set(c, fn.Max(c, fn.Vec3(0f))); // min 0
 				//main.Set(c, c * fn.Smoothstep(0.1f, 0.3f, time)); // fade in
 
@@ -470,7 +488,7 @@ vec3 crap
 
 
 
-		public string Generate2(int it)
+		public string Generate1(int it)
 		{
 			var fn = new FunctionCollection();
 			var body = new ShaderBody();
