@@ -139,6 +139,139 @@ namespace UnlimitedShaderForks.GLSLBuilder
 			var sphereFunc = body.DeclareFunction<Vector3, float, float>("sphere", "p", "radius");
 			sphereFunc.Append("return length(p) - radius");
 
+
+			body.Append(@"
+vec3 gp;
+
+void pRx(inout vec2 p, float a)
+{
+	p = cos(a)*p + sin(a)*vec2(p.y, -p.x);
+}
+
+float spherex(vec3 p, float radius)
+{
+    return length(p) - radius;
+}
+
+float box(vec3 p, vec3 b)
+{
+	return length(max(abs(p) - b, 0.0));
+}
+
+float vmax(vec3 v) {
+	return max(max(v.x, v.y), v.z);
+}
+
+float sdRoundBox( vec3 p, vec3 b, float r )
+{
+//return vmax(abs(p) - (b + r));
+  vec3 d = abs(p) - b;
+  return length(max(d,0.0)) - r
+         + min(max(d.x,max(d.y,d.z)),0.0);
+}
+
+float gA(vec3 p)
+{
+    float d = 1.0 / 0.0;
+    vec3 t;
+    
+    p.x += 0.08;
+    p.y += 0.12;
+    
+    t = p;
+    t.y -= 0.105;
+    d = min(d, sdRoundBox( t, vec3( 0.02, 0.125, 0.07 ), 0.03 ) );
+
+    t = p;
+    t.y -= 0.11;
+    t.x -= 0.075;
+    d = min(d, sdRoundBox( t, vec3( 0.06, 0.001, 0.07 ), 0.02 ) );
+
+    t = p;
+    t.y -= 0.25;
+    t.x -= 0.066;
+    d = min(d, sdRoundBox( t, vec3( 0.06, 0.002, 0.07 ), 0.03 ) );
+    
+    t = p;
+    t.y -= 0.105;
+    t.x -= 0.13;
+    d = min(d, sdRoundBox( t, vec3( 0.02, 0.125, 0.07 ), 0.03 ) );
+    
+    gp.x -= 0.27;
+    
+    return d;
+}
+
+float gB(vec3 p)
+{
+    float d = 1.0 / 0.0;
+    vec3 t;
+    
+    p.x += 0.08;
+    p.y += 0.12;
+    
+    t = p;
+    t.y -= 0.116;
+    d = min(d, sdRoundBox( t, vec3( 0.02, 0.135, 0.07 ), 0.03 ) );
+
+    t = p;
+    t.y -= 0.11;
+    t.x -= 0.075;
+    d = min(d, sdRoundBox( t, vec3( 0.06, 0.001, 0.07 ), 0.02 ) );
+
+    t = p;
+    t.y -= 0.25;
+    t.x -= 0.068;
+    d = min(d, sdRoundBox( t, vec3( 0.06, 0.002, 0.07 ), 0.03 ) );
+
+    t = p;
+    t.y += 0.027;
+    t.x -= 0.068;
+    d = min(d, sdRoundBox( t, vec3( 0.06, 0.002, 0.07 ), 0.02 ) );
+    
+    t = p;
+    t.y -= 0.037;
+    t.x -= 0.13;
+    d = min(d, sdRoundBox( t, vec3( 0.02, 0.05, 0.07 ), 0.03 ) );
+    
+    t = p;
+    t.y -= 0.19;
+    t.x -= 0.13;
+    d = min(d, sdRoundBox( t, vec3( 0.02, 0.05, 0.07 ), 0.03 ) );    
+    gp.x -= 0.27;
+    
+    return d;
+}
+
+float g0(vec3 p)
+{
+    gp.x -= 0.30;
+    return sdRoundBox( p, vec3( 0.10, 0.14, 0.07 ), 0.03 );
+}
+
+float gZ(vec3 p)
+{
+    float d = 1.0 / 0.0;
+    
+    p.y += 0.12;
+    d = min(d, sdRoundBox( p, vec3( 0.1, 0.01, 0.07 ), 0.03 ) );
+    p.y -= 0.25;
+    
+    d = min(d, sdRoundBox( p, vec3( 0.1, 0.01, 0.07 ), 0.03 ) );
+    p.y += 0.13;
+
+    p.x += 0.0025;
+    pRx(p.xy, 0.86);
+    d = min(d, box(p, vec3(0.16, 0.03, 0.1)));
+    
+    gp.x -= 0.30;
+    
+    return d;
+}
+
+vec3 crap
+");
+
 			var scene = body.DeclareFunction<Vector3, Vector4>("scene", "p");
 			{
 				var p = scene.A1;
@@ -191,7 +324,8 @@ namespace UnlimitedShaderForks.GLSLBuilder
 				//var sphere = scene.Declare<float>("sphere", sphereFunc.Call(fn.Vec3(p.X(), p.Y(), p.Z() / 10f), 1f));
 				//scene.Return(fn.Min(0.001f, 1f + l - sphere * 1f));
 
-				var l = scene.Declare<float>("l", _vc.Complicate(times: 10));
+				//var d = scene.Declare<float>("d", _vc.Complicate(times: 10));
+				var d = scene.Declare<float>("d", 10f);
 				var sphere = scene.Declare<float>("sphere", sphereFunc.Call(p, 1f));
 
 				//var r = scene.Declare<Vector3>("r", fn.Vec3(_vc.Complicate(times: 10)) * new Vector3(0.68f, 0.18f, 0.14f));
@@ -201,8 +335,28 @@ namespace UnlimitedShaderForks.GLSLBuilder
 				var g = scene.Declare<Vector3>("g", fn.Vec3(_vc.Complicate(times: 10)) * new Vector3(0f, 1f, 0f));
 				var b = scene.Declare<Vector3>("b", fn.Vec3(_vc.Complicate(times: 10)) * new Vector3(0f, 0f, 1f));
 
-				var c = scene.Declare<Vector3>("c", fn.Clamp(r+g+b, 0.1f, 1f)) / l;
-				scene.Return(fn.Vec4(c, fn.Min(0.01f, l + sphere)));
+
+				scene.Append(@"gp = p * 0.2;
+							gp.x += 1.;
+    d = min(d, g0(gp));
+    d = min(d, g0(gp));
+    d = min(d, gA(gp));
+    d = min(d, gA(gp));
+    d = min(d, gB(gp));
+    d = min(d, gB(gp));
+    d = min(d, g0(gp));
+    d = min(d, g0(gp));
+    d = min(d, gZ(gp));
+    d = min(d, g0(gp));
+    d = min(d, gZ(gp))");
+
+				//scene.Append("")
+
+
+				//var c = scene.Declare<Vector3>("c", fn.Clamp(r+g+b, 0.1f, 1f)) / d;
+				var c = scene.Declare<Vector3>("c", fn.Clamp(r+g+b, 0.1f, 1f));
+				//scene.Return(fn.Vec4(c, fn.Min(0.01f, d + sphere)));
+				scene.Return(fn.Vec4(c, fn.Min(0.01f, d)));
 			}
 
 			var march = body.DeclareFunction<Vector2, Vector3>("march", "uv");
@@ -216,7 +370,8 @@ namespace UnlimitedShaderForks.GLSLBuilder
 
 				//march.Set(uv, uv * (1f + zoom * zoom));
 				//march.Append("cameraOrigin += vec3(sin(Time) * 3., sin(Time * 0.4) * 0.5, sin(Time) * 1.)");
-				var cameraTarget = march.Declare<Vector3>("cameraTarget", fn.Vec3(0f, 0f, 0f));
+				//var cameraTarget = march.Declare<Vector3>("cameraTarget", fn.Vec3(0f, 0f, 0f));
+				var cameraTarget = march.Declare<Vector3>("cameraTarget", cameraOrigin + fn.Vec3(0f, 0f, -1f));
 				//var cameraTarget = march.Declare<Vector3>("cameraTarget", cameraOrigin + fn.Vec3(0f, 0f, 1f));
 				var upDirection = march.Declare<Vector3>("upDirection", fn.Vec3(0f, 1f, 0f));
 				var cameraDir = march.Declare<Vector3>("cameraDir", fn.Normalize(cameraTarget - cameraOrigin));
