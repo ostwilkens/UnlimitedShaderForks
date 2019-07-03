@@ -69,6 +69,26 @@ float smoothStairs(float x)
 
 float spikeFunc(float x)
 {
+	if(Time / DUR < 10.)
+		return 0.;
+
+	if(Time / DUR > 44. && Time / DUR < 74.)
+		return 0.;
+
+	if(Time / DUR > 116.)
+		return 0.;
+
+	if(Time / DUR > 74. && Time / DUR < 74.5)
+	{
+		return fract(x * 2.) * 2.;
+	}
+
+	if(Time / DUR > 75. && Time / DUR < 75.5)
+	{
+		return fract(-x * 2.);
+	}
+
+	x -= 0.1;
 	return max(min(min(fract(x / -2.) * 2. -1., sin((x + 1.) / 0.31831 ) + 1.), sin((x - 1.278) / 0.31831) + 0.645), 0.);
 }
 

@@ -24,10 +24,11 @@ namespace UnlimitedShaderForks
 
 			Vector2 lastGrabPos = new Vector2(0f);
 			bool grabbing = false;
-			int it = 0;
+			int it = 30;
 			while (window.Exists)
 			{
 				//int newit = (int)((window.Time.ElapsedSeconds + 0.4f) / 7.5f * 4f);
+
 				//if(newit != it)
 				//{
 				//	it = newit;
@@ -106,9 +107,9 @@ namespace UnlimitedShaderForks
 							case Key.C:
 								window.Time.Timescale = 1.0d;
 								break;
-							//case Key.S:
-							//	window.SyncAudio();
-							//	break;
+							case Key.S:
+								window.SyncAudio();
+								break;
 							//case Key.C:
 							//	window.View.Offset = new Vector2(0f);
 							//	window.View.Zoom = 0f;
@@ -119,9 +120,9 @@ namespace UnlimitedShaderForks
 							case Key.Space:
 								window.Time.Toggle();
 								break;
-							case Key.S:
-								File.WriteAllText($@"{DateTime.Now.Ticks}.frag", window.FragmentCode);
-								break;
+							//case Key.S:
+							//	File.WriteAllText($@"{DateTime.Now.Ticks}.frag", window.FragmentCode);
+							//	break;
 						}
 					}
 					//else
