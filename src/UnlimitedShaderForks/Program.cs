@@ -18,7 +18,8 @@ namespace UnlimitedShaderForks
 			var audio = Audio.Load("audio.mp3", 1f, true);
 			var windowCreateInfo = new WindowCreateInfo(100, 100, 1280, 720, WindowState.Normal, "Demo");
 			var window = new Window(windowCreateInfo, audio);
-			var gen = new GLSLGenerator(1012);
+			//var gen = new GLSLGenerator(1012);
+			var gen = new GLSLGenerator((int)DateTime.Now.Ticks);
 			//var gen = new GLSLGenerator(1017);
 			window.FragmentCode = args.Length > 0 ? File.ReadAllText(args[0]) : gen.Generate3(0);
 
@@ -107,9 +108,9 @@ namespace UnlimitedShaderForks
 							case Key.C:
 								window.Time.Timescale = 1.0d;
 								break;
-							case Key.S:
-								window.SyncAudio();
-								break;
+							//case Key.S:
+							//	window.SyncAudio();
+							//	break;
 							//case Key.C:
 							//	window.View.Offset = new Vector2(0f);
 							//	window.View.Zoom = 0f;
@@ -120,9 +121,9 @@ namespace UnlimitedShaderForks
 							case Key.Space:
 								window.Time.Toggle();
 								break;
-							//case Key.S:
-							//	File.WriteAllText($@"{DateTime.Now.Ticks}.frag", window.FragmentCode);
-							//	break;
+							case Key.S:
+								File.WriteAllText($@"{DateTime.Now.Ticks}.frag", window.FragmentCode);
+								break;
 						}
 					}
 					//else

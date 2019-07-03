@@ -49,181 +49,61 @@ namespace UnlimitedShaderForks
 			_timeline.OnRepeat += (obj, args) => this.Close();
 
 			{
-				var span = new Span();
-				var code = File.ReadAllText("636948464617234550.frag");
+				var span = new Span(0, 48 * b);
+				var code = File.ReadAllText("636977216337209132.frag");
+				var state = new FragmentCodeState(window, code);
+				span.States.Add(state);
+				_timeline.Spans.Add(span);
+			}
+
+			{
+				var span = new Span(48 * b, 56 * b);
+				var code = File.ReadAllText("636977750001312665.frag");
+				var state = new FragmentCodeState(window, code);
+				span.States.Add(state);
+				_timeline.Spans.Add(span);
+			}
+
+			{
+				var span = new Span(56 * b, 64 * b);
+				var code = File.ReadAllText("636977754573933250.frag");
+				var state = new FragmentCodeState(window, code);
+				span.States.Add(state);
+				_timeline.Spans.Add(span);
+			}
+
+			{
+				var span = new Span(64 * b, 72 * b);
+				var code = File.ReadAllText("636977754472853332.frag");
+				var state = new FragmentCodeState(window, code);
+				span.States.Add(state);
+				_timeline.Spans.Add(span);
+			}
+
+			{
+				var span = new Span(72 * b, 80 * b);
+				var code = File.ReadAllText("636977752990043352.frag");
+				var state = new FragmentCodeState(window, code);
+				span.States.Add(state);
+				_timeline.Spans.Add(span);
+			}
+
+			{
+				var span = new Span(80 * b, 88 * b);
+				var code = File.ReadAllText("636977752020441833.frag");
 				var state = new FragmentCodeState(window, code);
 				span.States.Add(state);
 				_timeline.Spans.Add(span);
 			}
 
 			//{
-			//	var span = new Span(0, 12 * b);
-			//	var code = File.ReadAllText("1.frag");
+			//	var span = new Span(96 * b, 102 * b);
+			//	//var code = File.ReadAllText("636968967925974661.frag");
 			//	var state = new FragmentCodeState(window, code);
 			//	span.States.Add(state);
 			//	_timeline.Spans.Add(span);
 			//}
 
-			//{
-			//	var span = new Span(12 * b, 20 * b);
-			//	var code = File.ReadAllText("636948352810076602.frag");
-			//	var state = new FragmentCodeState(window, code);
-			//	span.States.Add(state);
-			//	_timeline.Spans.Add(span);
-			//}
-
-			//{
-			//	var span = new Span(20 * b - 0.15f, 28 * b);
-			//	var code = File.ReadAllText("636948465444846427.frag");
-			//	var state = new FragmentCodeState(window, code);
-			//	span.States.Add(state);
-			//	_timeline.Spans.Add(span);
-			//}
-
-			//{
-			//	var span = new Span(28 * b - 0.11f, 36 * b);
-			//	var code = File.ReadAllText("636948464954324415.frag");
-			//	var state = new FragmentCodeState(window, code);
-			//	span.States.Add(state);
-			//	_timeline.Spans.Add(span);
-			//}
-
-			//{
-			//	var span = new Span(36 * b, 40 * b);
-			//	var code = File.ReadAllText("636948464617234550.frag");
-			//	var state = new FragmentCodeState(window, code);
-			//	span.States.Add(state);
-			//	_timeline.Spans.Add(span);
-			//}
-
-			//{
-			//	var span = new Span(40 * b, 43.5 * b);
-			//	var code = File.ReadAllText("636948386929941764.frag");
-			//	var state = new FragmentCodeState(window, code);
-			//	span.States.Add(state);
-			//	_timeline.Spans.Add(span);
-			//}
-
-			//{
-			//	var span = new Span(43.5 * b, 76 * b);
-			//	var code = File.ReadAllText("2.frag");
-			//	var state = new FragmentCodeState(window, code);
-			//	span.States.Add(state);
-			//	_timeline.Spans.Add(span);
-			//}
-
-			//{
-			//	var span = new Span(76 * b - 0.1f, 80 * b);
-			//	var code = File.ReadAllText("636948385754020679.frag");
-			//	var state = new FragmentCodeState(window, code);
-			//	span.States.Add(state);
-			//	_timeline.Spans.Add(span);
-			//}
-
-
-			//{
-			//	var span = new Span(80 * b - 0.1f, 84 * b);
-			//	var code = File.ReadAllText("636948484085218078.frag");
-			//	var state = new FragmentCodeState(window, code);
-			//	span.States.Add(state);
-			//	_timeline.Spans.Add(span);
-			//}
-
-			//{
-			//	var span = new Span(84 * b - 0.15f, 92 * b);
-			//	var code = File.ReadAllText("636948481894290834.frag");
-			//	var state = new FragmentCodeState(window, code);
-			//	span.States.Add(state);
-			//	_timeline.Spans.Add(span);
-			//}
-
-			//{
-			//	var span = new Span(92 * b - 0.1f, 94 * b);
-			//	var code = File.ReadAllText("636948480007839155.frag");
-			//	var state = new FragmentCodeState(window, code);
-			//	span.States.Add(state);
-			//	_timeline.Spans.Add(span);
-			//}
-
-			//{
-			//	var span = new Span(94 * b - 0.1f, 96 * b);
-			//	var code = File.ReadAllText("636948485405048997.frag"); 
-			//	var state = new FragmentCodeState(window, code);
-			//	span.States.Add(state);
-			//	_timeline.Spans.Add(span);
-			//}
-
-			//{
-			//	var span = new Span(96 * b - 0.1f, 98 * b);
-			//	var code = File.ReadAllText("636948482043142647.frag");
-			//	var state = new FragmentCodeState(window, code);
-			//	span.States.Add(state);
-			//	_timeline.Spans.Add(span);
-			//}
-
-			//{
-			//	var span = new Span(98 * b - 0.1f, 100 * b);
-			//	var code = File.ReadAllText("636948485201203365.frag");
-			//	var state = new FragmentCodeState(window, code);
-			//	span.States.Add(state);
-			//	_timeline.Spans.Add(span);
-			//}
-
-			//{
-			//	var span = new Span(100 * b, 102 * b);
-			//	var code = File.ReadAllText("636948372115734603.frag");
-			//	var state = new FragmentCodeState(window, code);
-			//	span.States.Add(state);
-			//	_timeline.Spans.Add(span);
-			//}
-
-			//{
-			//	var span = new Span(102 * b, 104 * b);
-			//	var code = File.ReadAllText("636948378712242059.frag");
-			//	var state = new FragmentCodeState(window, code);
-			//	span.States.Add(state);
-			//	_timeline.Spans.Add(span);
-			//}
-
-			//{
-			//	var span = new Span(104 * b, 106 * b);
-			//	var code = File.ReadAllText("636948379994976533.frag");
-			//	var state = new FragmentCodeState(window, code);
-			//	span.States.Add(state);
-			//	_timeline.Spans.Add(span);
-			//}
-
-			//{
-			//	var span = new Span(106 * b, 108 * b);
-			//	var code = File.ReadAllText("636948383617549899.frag");
-			//	var state = new FragmentCodeState(window, code);
-			//	span.States.Add(state);
-			//	_timeline.Spans.Add(span);
-			//}
-
-			//{
-			//	var span = new Span(108 * b, 112 * b);
-			//	var code = File.ReadAllText("636948383663384620.frag");
-			//	var state = new FragmentCodeState(window, code);
-			//	span.States.Add(state);
-			//	_timeline.Spans.Add(span);
-			//}
-
-			//{
-			//	var span = new Span(112 * b, 116 * b);
-			//	var code = File.ReadAllText("636948379889793952.frag");
-			//	var state = new FragmentCodeState(window, code);
-			//	span.States.Add(state);
-			//	_timeline.Spans.Add(span);
-			//}
-
-			//{
-			//	var span = new Span(116 * b, 120 * b);
-			//	var code = File.ReadAllText("2.frag");
-			//	var state = new FragmentCodeState(window, code);
-			//	span.States.Add(state);
-			//	_timeline.Spans.Add(span);
-			//}
 		}
 
 		public Window(WindowCreateInfo windowCreateInfo, Audio audio)
@@ -241,7 +121,7 @@ namespace UnlimitedShaderForks
 			_factory = _gd.ResourceFactory;
 			_audio = audio;
 
-			_window.CursorVisible = false;
+			_window.CursorVisible = true;
 
 			_cl = _factory.CreateCommandList();
 

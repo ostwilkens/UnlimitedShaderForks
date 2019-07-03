@@ -55,7 +55,7 @@ namespace UnlimitedShaderForks
 					}
 					else if (!state.IsActive && shouldBeActive)
 					{
-						state.Enter();
+						state.Enter((float)span.Start.TotalSeconds);
 					}
 				}
 			}
@@ -159,10 +159,11 @@ namespace UnlimitedShaderForks
 			this.FragmentCode = fragmentCode;
 		}
 
-		public void Enter()
+		public void Enter(float shaderStartOffset)
 		{
 			this.isActive = true;
 			_window.FragmentCode = FragmentCode;
+			_window.Time.ShaderStartOffset = shaderStartOffset;
 		}
 
 		public void Leave()
@@ -248,7 +249,7 @@ namespace UnlimitedShaderForks
 	public interface IState
 	{
 		bool IsActive { get; }
-		void Enter();
+		void Enter(float shaderStartOffset);
 		//void Load();
 		void Draw();
 		void SetUniforms();

@@ -108,5 +108,7 @@ namespace UnlimitedShaderForks
 
 			OnStep?.Invoke(this, EventArgs.Empty);
 		}
+
+		public float ShaderStartOffset { get; set; } = 0f;
 	}
 }

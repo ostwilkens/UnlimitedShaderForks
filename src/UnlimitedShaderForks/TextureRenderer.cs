@@ -86,7 +86,7 @@ namespace UnlimitedShaderForks
 
 		public override void UpdateResources()
 		{
-			_gd.UpdateBuffer(_timeBuffer, 0, (float)Time.ElapsedSeconds);
+			_gd.UpdateBuffer(_timeBuffer, 0, (float)Time.ElapsedSeconds - Time.ShaderStartOffset);
 			_gd.UpdateBuffer(_offsetBuffer, 0, View.Offset);
 			_gd.UpdateBuffer(_zoomBuffer, 0, View.Zoom);
 		}
