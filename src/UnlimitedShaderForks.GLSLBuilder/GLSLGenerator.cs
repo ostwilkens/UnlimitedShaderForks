@@ -148,9 +148,11 @@ void pRx(inout vec2 p, float a)
 	p = cos(a)*p + sin(a)*vec2(p.y, -p.x);
 }
 
-float spherex(vec3 p, float radius)
+float elipse(vec3 p, vec3 r )
 {
-    return length(p) - radius;
+    float k0 = length(p/r);
+    float k1 = length(p/(r*r));
+    return k0*(k0-1.0)/k1;
 }
 
 float box(vec3 p, vec3 b)
@@ -162,111 +164,167 @@ float vmax(vec3 v) {
 	return max(max(v.x, v.y), v.z);
 }
 
-float sdRoundBox( vec3 p, vec3 b, float r )
+float box2(vec3 p, vec3 b) {
+	return vmax(abs(p) - b);
+}
+
+float box3( vec3 p, vec3 b )
 {
-//return vmax(abs(p) - (b + r));
   vec3 d = abs(p) - b;
-  return length(max(d,0.0)) - r
-         + min(max(d.x,max(d.y,d.z)),0.0);
+  return length(max(d,0.0));
+         + min(max(d.x,max(d.y,d.z)),0.0); // remove this line for an only partially signed sdf 
+}
+
+float gSPACE(vec3 p)
+{
+    gp.x -= 0.10;
+    
+    return 1.0 / 0.0;
 }
 
 float gA(vec3 p)
 {
+    gp.x -= 0.30;
     float d = 1.0 / 0.0;
-    vec3 t;
-    
-    p.x += 0.08;
-    p.y += 0.12;
-    
-    t = p;
-    t.y -= 0.105;
-    d = min(d, sdRoundBox( t, vec3( 0.02, 0.125, 0.07 ), 0.03 ) );
+    d = min( d, box( p, vec3( 0.12, 0.18, 0.07 )) );
 
-    t = p;
-    t.y -= 0.11;
-    t.x -= 0.075;
-    d = min(d, sdRoundBox( t, vec3( 0.06, 0.001, 0.07 ), 0.02 ) );
+    p.y -= 0.06;
+    d = max( d, -box2( p, vec3( 0.02, 0.06, 0.1 )) );
 
+    p.y += 0.18;
+    d = max( d, -box2( p, vec3( 0.02, 0.08, 0.1 )) );
+
+    p.y -= 0.30;
+    p.x -= 0.12;
+    vec3 t = p;
+    pRx( t.xy, 3.14592/4.0 );
+    d = max( d, -box2(t,vec3( 0.05, 0.05, 0.1)) );
+
+    p.x += 0.24;
     t = p;
-    t.y -= 0.25;
-    t.x -= 0.066;
-    d = min(d, sdRoundBox( t, vec3( 0.06, 0.002, 0.07 ), 0.03 ) );
-    
-    t = p;
-    t.y -= 0.105;
-    t.x -= 0.13;
-    d = min(d, sdRoundBox( t, vec3( 0.02, 0.125, 0.07 ), 0.03 ) );
-    
-    gp.x -= 0.27;
-    
+    pRx( t.xy, 3.14592/4.0 );
+    d = max( d, -box2(t,vec3( 0.05, 0.05, 0.1)) );
+
     return d;
 }
 
 float gB(vec3 p)
 {
+    gp.x -= 0.30;
     float d = 1.0 / 0.0;
-    vec3 t;
-    
-    p.x += 0.08;
-    p.y += 0.12;
-    
-    t = p;
-    t.y -= 0.116;
-    d = min(d, sdRoundBox( t, vec3( 0.02, 0.135, 0.07 ), 0.03 ) );
+    d = min( d, box( p, vec3( 0.12, 0.18, 0.07 )) );
 
-    t = p;
-    t.y -= 0.11;
-    t.x -= 0.075;
-    d = min(d, sdRoundBox( t, vec3( 0.06, 0.001, 0.07 ), 0.02 ) );
+    p.y -= 0.06;
+    d = max( d, -box2( p, vec3( 0.02, 0.06, 0.1 )) );
 
-    t = p;
-    t.y -= 0.25;
-    t.x -= 0.068;
-    d = min(d, sdRoundBox( t, vec3( 0.06, 0.002, 0.07 ), 0.03 ) );
+    p.y += 0.15;
+    d = max( d, -box2( p, vec3( 0.02, 0.05, 0.1 )) );
 
+    p.y -= 0.30;
+    p.x -= 0.12;
+    vec3 t = p;
+    pRx( t.xy, 3.14592/4.0 );
+    d = max( d, -box2(t,vec3( 0.05, 0.05, 0.1)) );
+
+    p.y += 0.42;
     t = p;
-    t.y += 0.027;
-    t.x -= 0.068;
-    d = min(d, sdRoundBox( t, vec3( 0.06, 0.002, 0.07 ), 0.02 ) );
-    
+    pRx( t.xy, 3.14592/4.0 );
+    d = max( d, -box2(t,vec3( 0.05, 0.05, 0.1)) );
+
+    p.y -= 0.19;
+    p.x -= 0.04;
     t = p;
-    t.y -= 0.037;
-    t.x -= 0.13;
-    d = min(d, sdRoundBox( t, vec3( 0.02, 0.05, 0.07 ), 0.03 ) );
-    
-    t = p;
-    t.y -= 0.19;
-    t.x -= 0.13;
-    d = min(d, sdRoundBox( t, vec3( 0.02, 0.05, 0.07 ), 0.03 ) );    
-    gp.x -= 0.27;
-    
+    pRx( t.xy, 3.14592/4.0 );
+    d = max( d, -box2(t,vec3( 0.05, 0.05, 0.1)) );
+
     return d;
 }
 
-float g0(vec3 p)
+float gC(vec3 p)
 {
     gp.x -= 0.30;
-    return sdRoundBox( p, vec3( 0.10, 0.14, 0.07 ), 0.03 );
+    float d = 1.0 / 0.0;
+    d = min( d, box( p, vec3( 0.12, 0.18, 0.07 )) );
+
+    p.y -= 0.00;
+    p.x -= 0.06;
+    d = max( d, -box2( p, vec3( 0.08, 0.14, 0.1 )) );
+
+    p.y += 0.22;
+    //d = max( d, -box2( p, vec3( 0.02, 0.08, 0.1 )) );
+
+    return d;
 }
 
-float gZ(vec3 p)
+float gD(vec3 p)
 {
-    float d = 1.0 / 0.0;
-    
-    p.y += 0.12;
-    d = min(d, sdRoundBox( p, vec3( 0.1, 0.01, 0.07 ), 0.03 ) );
-    p.y -= 0.25;
-    
-    d = min(d, sdRoundBox( p, vec3( 0.1, 0.01, 0.07 ), 0.03 ) );
-    p.y += 0.13;
-
-    p.x += 0.0025;
-    pRx(p.xy, 0.86);
-    d = min(d, box(p, vec3(0.16, 0.03, 0.1)));
-    
     gp.x -= 0.30;
-    
+    float d = 1.0 / 0.0;
+    d = min( d, box( p, vec3( 0.12, 0.18, 0.07 )) );
+
+    d = max( d, -box2( p, vec3( 0.02, 0.14, 0.1 )) );
+
+    p.y -= 0.20;
+    p.x -= 0.12;
+    vec3 t = p;
+    pRx( t.xy, 3.14592/4.0 );
+    d = max( d, -box2(t,vec3( 0.05, 0.05, 0.1)) );
+
+    p.y += 0.40;
+    t = p;
+    pRx( t.xy, 3.14592/4.0 );
+    d = max( d, -box2(t,vec3( 0.05, 0.05, 0.1)) );
+
     return d;
+}
+
+float gH(vec3 p)
+{
+    gp.x -= 0.30;
+    float d = 1.0 / 0.0;
+    d = min( d, box( p, vec3( 0.12, 0.18, 0.07 )) );
+
+    p.y -= 0.10;
+    d = max( d, -box2( p, vec3( 0.02, 0.10, 0.1 )) );
+
+    p.y += 0.22;
+    d = max( d, -box2( p, vec3( 0.02, 0.08, 0.1 )) );
+
+    return d;
+}
+
+float gL(vec3 p)
+{
+    gp.x -= 0.30;
+    float d = 1.0 / 0.0;
+    d = min( d, box( p, vec3( 0.12, 0.18, 0.07 )) );
+
+    p.y -= 0.10;
+    p.x -= 0.06;
+    d = max( d, -box2( p, vec3( 0.08, 0.24, 0.1 )) );
+
+    p.y += 0.22;
+    //d = max( d, -box2( p, vec3( 0.02, 0.08, 0.1 )) );
+
+    return d;
+}
+
+float gU(vec3 p)
+{
+    gp.x -= 0.30;
+    float d = 1.0 / 0.0;
+    d = min( d, box( p, vec3( 0.12, 0.18, 0.07 )) );
+
+    p.y -= 0.10;
+    d = max( d, -box2( p, vec3( 0.02, 0.24, 0.1 )) );
+
+    return d;
+}
+
+float smin( float a, float b, float k )
+{
+    float res = exp2( -k*a ) + exp2( -k*b );
+    return -log2( res )/k;
 }
 
 vec3 crap
@@ -314,7 +372,12 @@ vec3 crap
 					CompositeFn.From(a1 => fn.Round(a1 * 7f) / 7f),
 					CompositeFn.From(a1 => -a1),
 					CompositeFn.From(a1 => fn.Floor(a1 * 7f) / 7f),
+
+					fn.Max(0f, 0.2f - fn.Fract(beats * 4f + 0.12f)) * 0.6f,
+					fn.Max(0f, 0.2f - fn.Fract(beats * 4f + 0.12f - 0.4f)) * 0.6f,
+					//fn.Step(6.25f, (fn.Fract(beats / 2f) * 2f) * 4f) - fn.Step(8f, (fn.Fract(beats / 2f) * 2f) * 4f),
 				});
+
 
 				//var l = scene.Declare<float>("l", _vc.Complicate(times: 10));
 				//var sphere = scene.Declare<float>("sphere", sphereFunc.Call(p, 0.1f));
@@ -335,43 +398,145 @@ vec3 crap
 				var g = scene.Declare<Vector3>("g", fn.Vec3(_vc.Complicate(times: 10)) * new Vector3(0f, 1f, 0f));
 				var b = scene.Declare<Vector3>("b", fn.Vec3(_vc.Complicate(times: 10)) * new Vector3(0f, 0f, 1f));
 
+				var c = scene.Declare<Vector3>("c", fn.Clamp(r + g + b, 0.1f, 1f));
 
-				scene.Append(@"gp = p * 0.2;
-							gp.x += 1.;
-    d = min(d, g0(gp));
-    d = min(d, g0(gp));
-    d = min(d, gA(gp));
-    d = min(d, gA(gp));
-    d = min(d, gB(gp));
-    d = min(d, gB(gp));
-    d = min(d, g0(gp));
-    d = min(d, g0(gp));
-    d = min(d, gZ(gp));
-    d = min(d, g0(gp));
-    d = min(d, gZ(gp))");
+				scene.Append("if(beats < 2. - 0.42) {");
+				scene.Append("} else if(beats < 4. - 0.42) {");
+				scene.Append(@"
+					gp = p;
+					gp *= 0.2;
+					gp.x += 0.9;
+					gp.y += 0.;
+					d = min(d, gH(gp));
+				");
+				scene.Append("} else if(beats < 6. - 0.42) {");
+				scene.Append(@"
+					gp = p;
+					gp *= 0.2;
+					gp.x += 0.9;
+					gp.y += 0.;
+					d = min(d, gH(gp));
+					d = min(d, gA(gp));
+				");
+				scene.Append("} else if(beats < 8. - 0.42) {");
+				scene.Append(@"
+					gp = p;
+					gp *= 0.2;
+					gp.x += 0.9;
+					gp.y += 0.;
+					d = min(d, gH(gp));
+					d = min(d, gA(gp));
+					d = min(d, gL(gp));
+				");
+				scene.Append("} else if(beats < 10. - 0.42) {");
+				scene.Append(@"
+					gp = p;
+					gp *= 0.2;
+					gp.x += 0.9;
+					gp.y += 0.;
+					d = min(d, gH(gp));
+					d = min(d, gA(gp));
+					d = min(d, gL(gp));
+					d = min(d, gSPACE(gp));
+					d = min(d, gB(gp));
+				");
+				scene.Append("} else if(beats < 12. - 0.42) {");
+				scene.Append(@"
+					gp = p;
+					gp *= 0.2;
+					gp.x += 0.9;
+					gp.y += 0.;
+					d = min(d, gH(gp));
+					d = min(d, gA(gp));
+					d = min(d, gL(gp));
+					d = min(d, gSPACE(gp));
+					d = min(d, gB(gp));
+					d = min(d, gU(gp));
+				");
+				scene.Append("} else if(beats < 14. - 0.42) {");
+				scene.Append(@"
+					gp = p;
+					gp *= 0.2;
+					gp.x += 0.9;
+					gp.y += 0.;
+					d = min(d, gH(gp));
+					d = min(d, gA(gp));
+					d = min(d, gL(gp));
+					d = min(d, gSPACE(gp));
+					d = min(d, gB(gp));
+					d = min(d, gU(gp));
+					d = min(d, gC(gp));
+				");
+				scene.Append("} else if(beats < 18. - 0.42) {");
+				scene.Append(@"
+					gp = p;
+					gp *= 0.2;
+					gp.x += 2.;
+					gp.y += 0.;
+					d = min(d, gH(gp));
+					d = min(d, gA(gp));
+					d = min(d, gL(gp));
+					d = min(d, gSPACE(gp));
+					d = min(d, gB(gp));
+					d = min(d, gU(gp));
+					d = min(d, gC(gp));
+					d = min(d, gD(gp))
+				");
+				scene.Append("} else if(beats < 32. - 0.) {");
+				scene.Append(@"
+					gp = p;
+					gp *= 0.2;
+					gp.x += 0.9;
+					gp.y += 0.;
+					d = min(d, gH(gp));
+					d = min(d, gA(gp));
+					d = min(d, gL(gp));
+					d = min(d, gSPACE(gp));
+					d = min(d, gB(gp));
+					d = min(d, gU(gp));
+					d = min(d, gC(gp));
+					d = min(d, gD(gp))
+				");
 
-				//scene.Append("")
+				int t = 50;
+				scene.Append("} else {");
+				scene.Declare("t1", _vc.Complicate(times: t) + sphere);
+				scene.Append("d = smin(d, t1, beats - 32.)");
+				scene.Append("}");
+
+
+
+
+				//scene.Set(d, _vc.Complicate(times: 10) + sphere);
 
 
 				//var c = scene.Declare<Vector3>("c", fn.Clamp(r+g+b, 0.1f, 1f)) / d;
-				var c = scene.Declare<Vector3>("c", fn.Clamp(r+g+b, 0.1f, 1f));
+
 				//scene.Return(fn.Vec4(c, fn.Min(0.01f, d + sphere)));
 				scene.Return(fn.Vec4(c, fn.Min(0.01f, d)));
+				//scene.Return(fn.Vec4(c, fn.Min(0.01f, d - c.Y() * 0.01f + c.X() * 0.001f + c.Z() * 0.001f)));
 			}
 
 			var march = body.DeclareFunction<Vector2, Vector3>("march", "uv");
 			{
 				var uv = march.A1;
 
+				var snapcam = fn.Vec3(
+					3f - fn.Mod(fn.Floor((beats + 0.42f) / 2f), 4f),
+					-1f + fn.Mod(fn.Floor((beats + 0.42f) / 2f), 3f),
+					1f - fn.Mod(fn.Floor((beats + 0.42f) / 2f), 2f)
+					) * 0.5f;
+
 				//var beaty = march.Declare<float>("beaty", (fn.Sin(beats * 3.14f * 1f) - 0.5f) * 2.7f);
 				var beaty = march.Declare<float>("beaty", (fn.Sin(beats * 3.14f * 0.1f) - 0.5f) * 1f);
 				//var cameraOrigin = march.Declare<Vector3>("cameraOrigin", fn.Vec3(0f + offset.X() + beaty, 0f + offset.Y(), 5f + time * 5f) * (1f + zoom * zoom));
+				//var cameraOrigin = march.Declare<Vector3>("cameraOrigin", snapcam + fn.Vec3(0f + offset.X() + beaty, 0f + offset.Y(), 2.5f) * (1f + zoom * zoom));
 				var cameraOrigin = march.Declare<Vector3>("cameraOrigin", fn.Vec3(0f + offset.X() + beaty, 0f + offset.Y(), 4f) * (1f + zoom * zoom));
 
 				//march.Set(uv, uv * (1f + zoom * zoom));
 				//march.Append("cameraOrigin += vec3(sin(Time) * 3., sin(Time * 0.4) * 0.5, sin(Time) * 1.)");
-				//var cameraTarget = march.Declare<Vector3>("cameraTarget", fn.Vec3(0f, 0f, 0f));
-				var cameraTarget = march.Declare<Vector3>("cameraTarget", cameraOrigin + fn.Vec3(0f, 0f, -1f));
+				var cameraTarget = march.Declare<Vector3>("cameraTarget", fn.Vec3(0f, 0f, 0f));
+				//var cameraTarget = march.Declare<Vector3>("cameraTarget", cameraOrigin + fn.Vec3(0f, 0f, -1f));
 				//var cameraTarget = march.Declare<Vector3>("cameraTarget", cameraOrigin + fn.Vec3(0f, 0f, 1f));
 				var upDirection = march.Declare<Vector3>("upDirection", fn.Vec3(0f, 1f, 0f));
 				var cameraDir = march.Declare<Vector3>("cameraDir", fn.Normalize(cameraTarget - cameraOrigin));
@@ -405,7 +570,7 @@ vec3 crap
 				//march.Append("if(dist < EPSILON) {");
 				march.Append("if(totalDist < MAX_DIST) {");
 
-				var eps = march.Declare<Vector2>("eps", fn.Vec2(0f, 0.4f));
+				var eps = march.Declare<Vector2>("eps", fn.Vec2(0f, 0.1f));
 				var normal = march.Declare<Vector3>("normal", fn.Normalize(fn.Vec3(
 					scene.Call(p + eps.Yxx()).W() - scene.Call(p - eps.Yxx()).W(),
 					scene.Call(p + eps.Xyx()).W() - scene.Call(p - eps.Xyx()).W(),
@@ -434,17 +599,34 @@ vec3 crap
 				main.Set(uv, fn.Vec2(uv.X() * (16f / 9f), uv.Y()));
 
 				// audio glitching
-				var audio1 = main.Declare("audio1", fn.Max(0f, 0.2f - fn.Fract(beats * 2f + 0.0f)) * 0.6f);
-				//var audio2 = main.Declare("audio2", fn.Max(0f, 0.1f - fn.Fract(beats * 4f + 0.05f - 0.4f)));
-				//var audio3 = main.Declare("audio3", fn.Step(6.0f, (fn.Fract(beats / 2f) * 2f) * 4f) - fn.Step(8f, (fn.Fract(beats / 2f) * 2f) * 4f));
-				main.Set(uv, fn.Vec2(uv.X() + (audio1 * (noise.Call(pR.Call(fn.Vec2(uv.Y()), time), 0.2f) - 0.2f)), uv.Y()));
-				//main.Set(uv, fn.Vec2(uv.X() + (audio2 * (noise.Call(pR.Call(fn.Vec2(uv.Y()), time), 0.2f) - 0.2f)), uv.Y()));
-				//main.Set(uv, fn.Vec2(uv.X() + (audio3 * (noise.Call(pR.Call(fn.Vec2(uv.Y()), time), 0.2f) - 0.12f)), uv.Y()));
+				//var audio1 = main.Declare("audio1", fn.Max(0f, 0.2f - fn.Fract(beats * 2f + 0.0f)) * 0.6f);
+				////var audio2 = main.Declare("audio2", fn.Max(0f, 0.1f - fn.Fract(beats * 4f + 0.05f - 0.4f)));
+				////var audio3 = main.Declare("audio3", fn.Step(6.0f, (fn.Fract(beats / 2f) * 2f) * 4f) - fn.Step(8f, (fn.Fract(beats / 2f) * 2f) * 4f));
+				//main.Set(uv, fn.Vec2(uv.X() + (audio1 * (noise.Call(pR.Call(fn.Vec2(uv.Y()), time), 0.2f) - 0.2f)), uv.Y()));
+				////main.Set(uv, fn.Vec2(uv.X() + (audio2 * (noise.Call(pR.Call(fn.Vec2(uv.Y()), time), 0.2f) - 0.2f)), uv.Y()));
+				////main.Set(uv, fn.Vec2(uv.X() + (audio3 * (noise.Call(pR.Call(fn.Vec2(uv.Y()), time), 0.2f) - 0.12f)), uv.Y()));
 
 				//var audio4 = main.Declare("audio4", fn.Max(0f, 0.1f - fn.Fract(beats * 0.5f - 1f)));
 				//var audio5 = main.Declare("audio5", fn.Max(0f, 0.1f - fn.Fract(beats * 0.5f + 0.5f)));
 				//main.Set(uv, fn.Vec2(uv.X() + (audio4 * 2f), uv.Y()));
 				//main.Set(uv, fn.Vec2(uv.X() - (audio5 * 2f), uv.Y()));
+
+
+				var audio1 = main.Declare("audio1", fn.Max(0f, 0.2f - fn.Fract(beats * 4f + 0.12f)) * 0.6f);
+				main.Set(uv, fn.Vec2(uv.X() + (audio1 * (noise.Call(pR.Call(fn.Vec2(uv.Y()), time), 0.2f) - 0.2f)), uv.Y()));
+				main.Set(uv, fn.Vec2(uv.X() + (audio1 * 0.2f), uv.Y()));
+
+				var audio2 = main.Declare("audio2", fn.Max(0f, 0.2f - fn.Fract(beats * 4f + 0.12f - 0.4f)) * 0.6f);
+				main.Set(uv, fn.Vec2(uv.X() - (audio2 * (noise.Call(pR.Call(fn.Vec2(uv.Y()), time), 0.2f) - 0.2f)), uv.Y()));
+				main.Set(uv, fn.Vec2(uv.X() - (audio2 * 0.2f), uv.Y()));
+
+				//var audio2 = main.Declare("audio2", fn.Max(0f, 0.1f - fn.Fract(beats * 4f + 0.05f - 0.4f)));
+				//main.Set(uv, fn.Vec2(uv.X() + (audio2 * (noise.Call(pR.Call(fn.Vec2(uv.Y()), time), 0.2f) - 0.2f)), uv.Y()));
+
+				// buzzzz
+				var audio3 = main.Declare("audio3", fn.Step(6.25f, (fn.Fract(beats / 2f) * 2f) * 4f) - fn.Step(8f, (fn.Fract(beats / 2f) * 2f) * 4f));
+				main.Set(uv, fn.Vec2(uv.X() + (audio3 * (noise.Call(pR.Call(fn.Vec2(uv.Y()), time), 0.2f) - 0.12f)), uv.Y()));
+
 
 				var c = main.Declare<Vector3>("c", new Vector3(0f));
 
@@ -472,6 +654,8 @@ vec3 crap
 				//main.Append("float colorFactor = max(0.01, 1.0 - (mod(beats, 0.5)) * 5.0)");
 				//main.Append("c = round(c / colorFactor) * colorFactor");
 				//main.Append("c *= 1. + colorFactor * 0.5");
+
+				
 
 
 				//main.Set(c, c + noise.Call(pR.Call(uv, time), 0.5f) * 0.021f); // noise

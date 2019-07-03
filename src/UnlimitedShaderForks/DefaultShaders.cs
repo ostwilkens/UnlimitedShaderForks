@@ -85,9 +85,11 @@ void main()
 	dy *= dy;
 	uv -= 0.5;
 	uv *= 1.03;
-	uv.x *= 1.0 + (dy * 0.15 / (1. + 1. * spikeFunc(4. * Time / DUR)));
-	uv.y *= 1.0 + (dx * 0.1 * (1. + 1. * spikeFunc(4. * Time / DUR)));
-	uv.y *= (1. - 0.1 * spikeFunc(4. * Time / DUR));
+	float spike = 0.;
+	spike = spikeFunc(4. * Time / DUR);
+	uv.x *= 1.0 + (dy * 0.15 / (1. + 1. * spike));
+	uv.y *= 1.0 + (dx * 0.1 * (1. + 1. * spike));
+	uv.y *= (1. - 0.1 * spike);
 	uv += 0.5;
 
 	// distortions
@@ -102,7 +104,8 @@ void main()
 	//c /= 1. + overbleed;
 	c += (underbleed * 1.7).grb;
 
-	float colorFactor = max(0.01, 1.0 - (mod(Time / DUR, 0.5) * 5.0));
+
+	float colorFactor = max(0.01, 1.0 - (mod((Time) / DUR, 0.5) * 5.0));
 	c *= 1. + colorFactor * 0.2;
 	c += colorFactor * 0.04;
 

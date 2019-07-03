@@ -103,6 +103,9 @@ namespace UnlimitedShaderForks.GLSLBuilder
 		public readonly Fn<float, float, float> pow_ff = new Fn<float, float, float>("pow");
 		public Value<float> Pow(Value<float> a, Value<float> b) => pow_ff.Call(a, b);
 
+		public readonly Fn<float, float, float> mod_ff = new Fn<float, float, float>("mod");
+		public Value<float> Mod(Value<float> a, Value<float> b) => mod_ff.Call(a, b);
+
 		public readonly Fn<float, float> sqrt_f = new Fn<float, float>("sqrt");
 		public Value<float> Sqrt(Value<float> a) => sqrt_f.Call(a);
 
