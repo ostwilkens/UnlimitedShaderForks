@@ -16,7 +16,7 @@ namespace UnlimitedShaderForks
 		static void Main(params string[] args)
 		{
 			var audio = Audio.Load("audio.mp3", 1f, true);
-			var windowCreateInfo = new WindowCreateInfo(100, 100, 1280, 720, WindowState.Normal, "Demo");
+			var windowCreateInfo = new WindowCreateInfo(0, 0, 1920, 1080, WindowState.Normal, "HAL BUCD");
 			var window = new Window(windowCreateInfo, audio);
 			//var gen = new GLSLGenerator(1012);
 			var gen = new GLSLGenerator((int)DateTime.Now.Ticks);

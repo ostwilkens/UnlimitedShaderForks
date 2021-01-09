@@ -96,6 +96,7 @@ void main()
 {
 	vec2 uv = fsin_Position/2. + 0.5;
 
+
 	//uv *= 1. + spikeFunc(4. * Time / DUR);
 
 
@@ -115,6 +116,7 @@ void main()
 	// distortions
 	vec2 tuv = uv;
 	tuv.y += sin(4. * 3.14 * Time / 3) * sin(abs(4. * 3.14 * Time) / 7) * 0.01;
+
 
 	vec3 c = texture(sampler2D(SourceTexture, SourceSampler), tuv).rgb;
 	vec3 overbleed = max(vec3(0.), c - vec3(1.));

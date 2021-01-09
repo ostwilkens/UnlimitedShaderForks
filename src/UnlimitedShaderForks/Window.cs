@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 using System.Text;
 using Veldrid;
@@ -48,6 +49,15 @@ namespace UnlimitedShaderForks
 			_timeline = new Timeline();
 			_timeline.OnRepeat += (obj, args) => this.Close();
 
+			////{
+			////	var span = new Span();
+			////	var code = File.ReadAllText("636978760143850876.frag");
+			////	var state = new FragmentCodeState(window, code);
+			////	span.States.Add(state);
+			////	_timeline.Spans.Add(span);
+			////}
+
+
 			{
 				var span = new Span(0, 48 * b);
 				var code = File.ReadAllText("636977216337209132.frag");
@@ -66,7 +76,7 @@ namespace UnlimitedShaderForks
 
 			{
 				var span = new Span(56 * b, 64 * b);
-				var code = File.ReadAllText("636977754573933250.frag");
+				var code = File.ReadAllText("636977752020441833.frag");
 				var state = new FragmentCodeState(window, code);
 				span.States.Add(state);
 				_timeline.Spans.Add(span);
@@ -82,27 +92,61 @@ namespace UnlimitedShaderForks
 
 			{
 				var span = new Span(72 * b, 80 * b);
-				var code = File.ReadAllText("636977752990043352.frag");
+				var code = File.ReadAllText("636978491880687336.frag");
 				var state = new FragmentCodeState(window, code);
 				span.States.Add(state);
 				_timeline.Spans.Add(span);
 			}
 
 			{
-				var span = new Span(80 * b, 88 * b);
-				var code = File.ReadAllText("636977752020441833.frag");
+				var span = new Span(80 * b, 96 * b);
+				var code = File.ReadAllText("636978754797521954.frag");
 				var state = new FragmentCodeState(window, code);
 				span.States.Add(state);
 				_timeline.Spans.Add(span);
 			}
 
-			//{
-			//	var span = new Span(96 * b, 102 * b);
-			//	//var code = File.ReadAllText("636968967925974661.frag");
-			//	var state = new FragmentCodeState(window, code);
-			//	span.States.Add(state);
-			//	_timeline.Spans.Add(span);
-			//}
+			{
+				var span = new Span(96 * b, 112 * b);
+				var code = File.ReadAllText("636979550217165941.frag");
+				var state = new FragmentCodeState(window, code);
+				span.States.Add(state);
+				_timeline.Spans.Add(span);
+			}
+
+			{
+				var span = new Span(112 * b, 120 * b);
+				var code = File.ReadAllText("636979550950767061.frag");
+				var state = new FragmentCodeState(window, code);
+				span.States.Add(state);
+				_timeline.Spans.Add(span);
+			}
+
+			{
+				var span = new Span(120 * b, 136.5 * b);
+				var code = File.ReadAllText("636979551664200367.frag");
+				var state = new FragmentCodeState(window, code);
+				span.States.Add(state);
+				_timeline.Spans.Add(span);
+			}
+
+
+			////{
+			////	var span = new Span(72 * b, 80 * b);
+			////	var code = File.ReadAllText("636977752990043352.frag");
+			////	var state = new FragmentCodeState(window, code);
+			////	span.States.Add(state);
+			////	_timeline.Spans.Add(span);
+			////}
+
+			////{
+			////	var span = new Span(80 * b, 88 * b);
+			////	var code = File.ReadAllText("636977754573933250.frag");
+			////	var state = new FragmentCodeState(window, code);
+			////	span.States.Add(state);
+			////	_timeline.Spans.Add(span);
+			////}
+
 
 		}
 
@@ -116,7 +160,7 @@ namespace UnlimitedShaderForks
 			_window.Shown += _window_Shown;
 			_gd = VeldridStartup.CreateGraphicsDevice(
 				_window,
-				new GraphicsDeviceOptions { PreferStandardClipSpaceYDirection = true, SyncToVerticalBlank = false }, 
+				new GraphicsDeviceOptions { PreferStandardClipSpaceYDirection = true, SyncToVerticalBlank = true }, 
 				GraphicsBackend.OpenGL);
 			_factory = _gd.ResourceFactory;
 			_audio = audio;
@@ -129,20 +173,43 @@ namespace UnlimitedShaderForks
 			_passthroughRenderer = new PassthroughRenderer(_gd, _textureRenderer.Texture, Time);
 
 			audio.OnRepeat += (s, a) => SyncAudio();
-			_time.OnStart += (s, a) => audio.Play();
+			//_time.OnStart += (s, a) => audio.Play();
 			_time.OnStop += (s, a) => audio.Stop();
 			_time.OnStep += (s, a) => SyncAudio();
 			_time.OnTimescaleChanged += (s, a) => audio.PlaybackRate = (float)((Time)s).Timescale;
 
-			//_time.SetTime(TimeSpan.FromSeconds(108));
+			//_time.SetTime(TimeSpan.FromSeconds(67));
+			//_time.SetTime(TimeSpan.FromSeconds(59));
+			//_time.SetTime(TimeSpan.FromSeconds(70));
+		}
+
+		private void PrecompileShaders()
+		{
+			DateTime a = DateTime.Now;
+
+			var allStates = _timeline.Spans.SelectMany(s => s.States);
+			var codeStates = allStates.Select(s => s as FragmentCodeState).Where(s => s != null);
+
+			foreach(var state in codeStates)
+			{
+				_textureRenderer.FragmentCode = state.FragmentCode;
+				_textureRenderer.ReloadShaders();
+				this.Draw();
+			}
+
+			Console.WriteLine("Shaders compiled in " + (DateTime.Now - a).TotalSeconds.ToString("N3"));
 		}
 
 		private void _window_Shown()
 		{
+			PrecompileShaders();
+
 			_time.Start();
 			SyncAudio();
 			//_audio.Play();
 		}
+
+		int timesResyncedAudio = 0;
 
 		private void UpdateFps()
 		{
@@ -153,7 +220,16 @@ namespace UnlimitedShaderForks
 
 			if (_swThisSecond.ElapsedMilliseconds >= 1000)
 			{
-				_window.Title = $"{_framesThisSecond} fps, {t:N2}";
+				var syncError = _audio.CurrentTime - _time.Elapsed;
+				_window.Title = $"{_framesThisSecond} fps, {t:N2}, {syncError.TotalMilliseconds:N0}";
+
+				if(Math.Abs(syncError.TotalMilliseconds) > 100 && timesResyncedAudio < 1)
+				{
+					Console.WriteLine("Resyncing audio");
+					SyncAudio();
+					timesResyncedAudio++;
+				}
+
 				_framesThisSecond = 0;
 				_swThisSecond.Restart();
 			}

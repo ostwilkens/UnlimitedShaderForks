@@ -146,7 +146,7 @@ namespace UnlimitedShaderForks
 	public class FragmentCodeState : IState
 	{
 		private Window _window;
-		private string FragmentCode { get; set; }
+		public string FragmentCode { get; set; }
 
 		private bool isActive;
 		public bool IsActive => isActive;

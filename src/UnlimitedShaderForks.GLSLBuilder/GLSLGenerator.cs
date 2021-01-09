@@ -333,6 +333,7 @@ vec3 crap
 			var scene = body.DeclareFunction<Vector3, Vector4>("scene", "p");
 			{
 				var p = scene.A1;
+				//scene.Append("pRx(p.xz, Time)");
 
 				_vc = new ValueCollection(new IStatement[] {
 					fn.sin_f,
@@ -505,68 +506,119 @@ vec3 crap
 				//scene.Append("}");
 
 
-				scene.Append("if(beats < 2. - 0.42) {");
-				scene.Append("} else if(beats < 4. - 0.42) {");
-				scene.Append(@"
-					gp = p;
-					gp.x = -gp.x;
-					pRx(gp.xz, 0.5 * 3.14 * beats + 0.);
-					gp *= 0.4;
-					gp.x += 0.9;
-					gp.y -= 0.05;
-					gp.z += 0.8;
-					d = min(d, gB(gp));
-					d = min(d, gU(gp));
-					d = min(d, gC(gp));
-					d = min(d, gD(gp));
-					d = min(d, gSPACE(gp));
-					d = min(d, gH(gp));
-					d = min(d, gA(gp));
-					d = min(d, gL(gp))
-				");
-				scene.Append("} else if(beats < 6. - 0.42) {");
-				scene.Append("} else if(beats < 8. - 0.42) {");
-				scene.Append(@"
-					gp = p;
-					gp.x = -gp.x;
-					pRx(gp.xz, 0.5 * 3.14 * beats + 0.);
-					gp *= 0.4;
-					gp.x += 0.9;
-					gp.y -= 0.05;
-					gp.z += 0.8;
-					d = min(d, gH(gp));
-					d = min(d, gA(gp));
-					d = min(d, gL(gp));
-					d = min(d, gSPACE(gp));
-					d = min(d, gB(gp));
-					d = min(d, gU(gp));
-					d = min(d, gC(gp));
-					d = min(d, gD(gp))
-				");
-				scene.Append("} else if(beats < 10. - 0.42) {");
-				scene.Append("} else {");
-				scene.Append(@"
-					gp = p;
-					gp.x = -gp.x;
-					pRx(gp.xz, 0.5 * 3.14 * beats + 0.);
-					gp *= 0.4;
-					gp.x += 0.9;
-					gp.y -= 0.05;
-					gp.z += 0.8;
-					d = min(d, gH(gp));
-					d = min(d, gU(gp));
-					d = min(d, gC(gp));
-					d = min(d, gD(gp));
-					d = min(d, gA(gp));
-					d = min(d, gL(gp));
-					d = min(d, gSPACE(gp));
-					d = min(d, gB(gp))
-				");
-				scene.Append("}");
+				//scene.Append("if(beats < 2. - 0.42) {");
+				//scene.Append(@"
+				//	gp = p;
+				//	gp.x = -gp.x;
+				//	pRx(gp.xz, 0.5 * 3.14 * (beats + 0.4));
+				//	gp *= 0.4;
+				//	gp.x += 0.9;
+				//	gp.y -= 0.05;
+				//	gp.z += 0.8;
+				//	d = min(d, gB(gp));
+				//	d = min(d, gU(gp));
+				//	d = min(d, gC(gp));
+				//	d = min(d, gD(gp));
+				//	d = min(d, gSPACE(gp));
+				//	d = min(d, gH(gp));
+				//	d = min(d, gA(gp));
+				//	d = min(d, gL(gp))
+				//");
+				//scene.Append("} else if(beats < 4. - 0.42) {");
+				//scene.Append(@"
+				//	gp = p;
+				//	gp.x = -gp.x;
+				//	pRx(gp.xz, -0.5 * 3.14 * (beats - 0.4 - 1.));
+				//	gp *= 0.4;
+				//	gp.x += 0.9;
+				//	gp.y -= 0.05;
+				//	gp.z += 0.8;
+				//	d = min(d, gB(gp));
+				//	d = min(d, gU(gp));
+				//	d = min(d, gC(gp));
+				//	d = min(d, gD(gp));
+				//	d = min(d, gSPACE(gp));
+				//	d = min(d, gH(gp));
+				//	d = min(d, gA(gp));
+				//	d = min(d, gL(gp))
+				//");
+				//scene.Append("} else if(beats < 6. - 0.42) {");
+				//scene.Append(@"
+				//	gp = p;
+				//	gp.x = -gp.x;
+				//	pRx(gp.xz, 0.5 * 3.14 * (beats + 0.4));
+				//	gp *= 0.4;
+				//	gp.x += 0.9;
+				//	gp.y -= 0.05;
+				//	gp.z += 0.8;
+				//	d = min(d, gB(gp));
+				//	d = min(d, gU(gp));
+				//	d = min(d, gC(gp));
+				//	d = min(d, gD(gp));
+				//	d = min(d, gSPACE(gp));
+				//	d = min(d, gH(gp));
+				//	d = min(d, gA(gp));
+				//	d = min(d, gL(gp))
+				//");
+				//scene.Append("} else if(beats < 8. - 0.42) {");
+				//scene.Append(@"
+				//	gp = p;
+				//	gp.x = -gp.x;
+				//	pRx(gp.xz, -0.5 * 3.14 * (beats - 0.4 - 1.));
+				//	gp *= 0.4;
+				//	gp.x += 0.9;
+				//	gp.y -= 0.05;
+				//	gp.z += 0.8;
+				//	d = min(d, gH(gp));
+				//	d = min(d, gA(gp));
+				//	d = min(d, gL(gp));
+				//	d = min(d, gSPACE(gp));
+				//	d = min(d, gB(gp));
+				//	d = min(d, gU(gp));
+				//	d = min(d, gC(gp));
+				//	d = min(d, gD(gp))
+				//");
+				//scene.Append("} else if(beats < 10. - 0.42) {");
+				//scene.Append(@"
+				//	gp = p;
+				//	gp.x = -gp.x;
+				//	pRx(gp.xz, 0.5 * 3.14 * (beats + 0.4));
+				//	gp *= 0.4;
+				//	gp.x += 0.9;
+				//	gp.y -= 0.05;
+				//	gp.z += 0.8;
+				//	d = min(d, gB(gp));
+				//	d = min(d, gU(gp));
+				//	d = min(d, gC(gp));
+				//	d = min(d, gD(gp));
+				//	d = min(d, gSPACE(gp));
+				//	d = min(d, gH(gp));
+				//	d = min(d, gA(gp));
+				//	d = min(d, gL(gp))
+				//");
+				//scene.Append("} else {");
+				//scene.Append(@"
+				//	gp = p;
+				//	gp.x = -gp.x;
+				//	pRx(gp.xz, -0.5 * 3.14 * (beats - 0.4 - 1.));
+				//	gp *= 0.4;
+				//	gp.x += 0.9;
+				//	gp.y -= 0.05;
+				//	gp.z += 0.8;
+				//	d = min(d, gH(gp));
+				//	d = min(d, gU(gp));
+				//	d = min(d, gC(gp));
+				//	d = min(d, gD(gp));
+				//	d = min(d, gA(gp));
+				//	d = min(d, gL(gp));
+				//	d = min(d, gSPACE(gp));
+				//	d = min(d, gB(gp))
+				//");
+				//scene.Append("}");
 
 
 
-				scene.Declare("t1", _vc.Complicate(times: 50) + sphere);
+				scene.Declare("t1", _vc.Complicate(times: 100) + sphere);
 				scene.Append("d = min(d, t1)");
 				scene.Append("d = smin(d, t1, beats * 2.)");
 
@@ -634,7 +686,7 @@ vec3 crap
 				//march.Append("if(dist < EPSILON) {");
 				march.Append("if(totalDist < MAX_DIST) {");
 
-				var eps = march.Declare<Vector2>("eps", fn.Vec2(0f, 0.2f));
+				var eps = march.Declare<Vector2>("eps", fn.Vec2(0f, 0.8f));
 				var normal = march.Declare<Vector3>("normal", fn.Normalize(fn.Vec3(
 					scene.Call(p + eps.Yxx()).W() - scene.Call(p - eps.Yxx()).W(),
 					scene.Call(p + eps.Xyx()).W() - scene.Call(p - eps.Xyx()).W(),
@@ -692,6 +744,7 @@ vec3 crap
 				main.Set(uv, fn.Vec2(uv.X() + (audio3 * (noise.Call(pR.Call(fn.Vec2(uv.Y()), time), 0.2f) - 0.12f)), uv.Y()));
 
 
+
 				var c = main.Declare<Vector3>("c", new Vector3(0f));
 
 				main.Set(c, march.Call(uv));
@@ -729,7 +782,7 @@ vec3 crap
 				main.Set(colorOut, fn.Vec4(c, 1f));
 			}
 
-			Console.WriteLine(body);
+			//Console.WriteLine(body);
 
 			return body.ToString();
 		}
